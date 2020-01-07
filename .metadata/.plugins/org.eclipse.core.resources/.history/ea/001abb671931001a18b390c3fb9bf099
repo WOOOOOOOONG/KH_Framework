@@ -1,0 +1,19 @@
+package com.kh.board.model.vo;
+
+import java.sql.Date;
+import java.util.ArrayList;
+
+public class Board {
+	private int bId;
+	private int bType;
+	private String bTitle;
+	private String bContent;
+	private int bWriter;
+	private String userName; // Member의 mId와 bWriter의 Join을 통해 알아올 게시글 작성자 이름
+	
+	private int bCount;
+	private Date bCreateDate;
+	private Date bModifyDate;
+	private String bStatus;
+	private ArrayList<Reply> replyList; // 게시글에 달린 댓글 리스트
+}

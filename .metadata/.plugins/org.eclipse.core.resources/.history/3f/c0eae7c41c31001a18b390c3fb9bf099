@@ -1,0 +1,89 @@
+package com.kh.board.controller;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.kh.board.model.exception.SelectBoardListException;
+import com.kh.board.model.service.BoardService;
+import com.kh.board.model.vo.Board;
+import com.kh.board.model.vo.PageInfo;
+import com.kh.common.Pagination;
+
+/**
+ * Servlet implementation class SelectBoardListServlet
+ */
+@WebServlet("/selectList.bo")
+public class SelectBoardListServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public SelectBoardListServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		BoardService bService = new BoardService();
+		
+		// 페이징 처리 방법
+		// 1. JSP/Servlet에서 했던 페이징 처리 방식
+		// 서블릿에서 listCount, currentPage를 받아와서 계산을 통해
+		// 얻어지는 maxPage, startPage, endPage를 PageInfo로 객체 생성
+		
+		// 2. 업그레이드 해보자
+		// 페이징 처리가 여러 곳에서 필요하다면(키워드 검색 등...) 
+		// 1번 코드를 여러번 작성해야 하므로 싱글톤 개념을 입혀서 listCount, currentPage
+		// 값을 보내면 자동으로 다른 페이지 정보 값을 계산해서 PageInfo 객체를 반환해주는 작업
+		
+		// => common 패키지 안에 Pagination 클래스 추가하고
+		// static 메소드로 paging 처리하는 메소드를 구현한다.
+		
+		// 이제 Pagination의 getPageInfo 메소드에 전달 값으로 보낼
+		// currentPage와 listCount를 알아오자
+		
+		// 기본으로 게시판은 1페이지부터 시작
+		int currentPage = 1;
+		// 하지만 페이지 전환 시 전달 받은 현재 페이지가 있을 시 해당 페이지를 currentPage로 적용
+		if(request.getParameter("currentPage") != null) {
+			currentPage = Integer.parseInt(request.getParameter("currentPage"));
+		}
+		
+		try {
+			int listCount = bService.getListCount();
+			
+			// Pagination의 getPageInfo 메소드로 currentPage, listCount 전달 후
+			// PageInfo 객체 리턴
+			PageInfo pi = Pagination.getPageInfo(currentPage, listCount);
+			
+			// ***** 페이징 처리 된 게시판 리스트 조회 *****
+			ArrayList<Board> list = new BoardService().selectBoardList(pi);
+			
+			request.setAttribute("pi", pi);
+			request.setAttribute("list", list);
+			
+			request.getRequestDispatcher("/views/board/boardList.jsp").forward(request, response);
+		} catch (SelectBoardListException e) {
+			request.setAttribute("msg", e.getMessage());
+			request.getRequestDispatcher("/views/common/errorPage.jsp").forward(request, response);
+		}
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doGet(request, response);
+	}
+}

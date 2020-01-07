@@ -1,0 +1,10 @@
+package com.kh.board.model.vo;
+
+public class Board {
+	private int bId;
+	private int bType;
+	private String bTitle;
+	private String bContent;
+	private int bWriter;
+	private String userName;
+}

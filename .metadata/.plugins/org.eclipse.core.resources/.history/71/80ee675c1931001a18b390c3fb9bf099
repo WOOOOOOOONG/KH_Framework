@@ -1,0 +1,14 @@
+package com.kh.board.model.vo;
+
+import java.sql.Date;
+
+public class Reply {
+	private int rId;
+	private String rContent;
+	private int refBid;
+	private int rWriter;
+	private String userName;
+	private Date rCreateDate;
+	private Date rModifyDate;
+	private String rStatus;
+}

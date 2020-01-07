@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;mybatisProject/src/com/kh/board/model/exception/selectBoardDetailException.java&apos; to &apos;SelectBoardDetailException.java&apos;" description="Rename resource &apos;selectBoardDetailException.java&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="src/com/kh/board/model/exception/selectBoardDetailException.java" name="SelectBoardDetailException.java" stamp="1578386670779" updateReferences="true"/>
+</session>

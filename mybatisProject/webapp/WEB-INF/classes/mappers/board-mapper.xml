@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+"-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="boardMapper">
+	<!-- 1_3. resultMap 추가 -->
+	<!-- 게시글 목록 조회용 resultMap -->
+	<resultMap id="boardResultSet" type="Board">
+		<id property="bId" column="BID"/>
+		<result property="bType" column="BTYPE"/>
+		<result property="bTitle" column="BTITLE"/>
+		<result property="bContent" column="BCONTENT"/>
+		<result property="bWriter" column="BWRITER"/>
+		<result property="userName" column="USER_NAME"/>
+		<result property="bCount" column="BCOUNT"/>
+		<result property="bCreateDate" column="B_CREATE_DATE"/>
+		<result property="bModifyDate" column="B_MODIFY_DATE"/>
+		<result property="bStatus" column="B_STATUS"/>
+	</resultMap>
+	
+	<!-- 2_3. 게시글 상세보기용 resultMap -->
+	<!-- 먼저 조회된 댓글들 매핑을 위해 replyResultSet resultMap 만들기 -->
+	<resultMap type="Reply" id="replyResultSet">
+		<id property="rId" column="RID"/>
+		<result property="rContent" column="RCONTENT"/>
+		<result property="refBid" column="REF_BID"/>
+		<result property="rWriter" column="RWRITER"/>
+		<result property="userName" column="R_USER_NAME"/>
+		<result property="rCreateDate" column="R_CREATE_DATE"/>
+		<result property="rModifyDate" column="R_MODIFY_DATE"/>
+		<result property="rStatus" column="RSTATUS"/>
+	</resultMap>
+	
+	<!--  -->
+	<resultMap id="boardResultSet2" type="Board">
+		<id property="bId" column="BID"/>
+		<result property="bType" column="BTYPE"/>
+		<result property="bTitle" column="BTITLE"/>
+		<result property="bContent" column="BCONTENT"/>
+		<result property="bWriter" column="BWRITER"/>
+		<result property="userName" column="B_USER_NAME"/><!-- 별칭 -->
+		<result property="bCount" column="BCOUNT"/>
+		<result property="bCreateDate" column="B_CREATE_DATE"/>
+		<result property="bModifyDate" column="B_MODIFY_DATE"/>
+		<result property="bStatus" column="B_STATUS"/>
+		<!-- 댓글 리스트 추가 -->
+		<collection property="replyList" javaType="java.util.ArrayList"
+		resultMap="replyResultSet"/>
+		<!-- id, result가 아닌 collection 태그로 작업하면
+		Board 클래스의 필드 값인 replyList(ArrayList)에 매핑시킬 수 있다. -->
+	</resultMap>
+	
+	<!-- 1_1. 게시글 수 조회용 쿼리문 -->
+	<select id="selectListCount" resultType="_int">
+		SELECT COUNT(*)
+		FROM BOARD
+		WHERE B_STATUS = 'Y'
+	</select>
+	
+	<!-- 1_2. 게시글 목록 조회용 쿼리문 -->
+	<!-- id가 boardResultSet인 resultMap을 위쪽에 추가 -->
+	<select id="selectBoardList" resultMap="boardResultSet">
+		SELECT *
+		FROM BOARD B
+		JOIN MEMBER M ON(B.BWRITER = M.MID)
+		WHERE B_STATUS = 'Y'
+		ORDER BY BID DESC
+		<!-- RowBounds라는 객체를 전달했으므로 페이징 처리는 따로 쿼리문에 구현할 필요 X -->
+	</select>
+
+	<!-- 2_1. 게시물 조회수 증가용 쿼리문 -->
+	<update id="updateBoardCount" parameterType="_int">
+		UPDATE BOARD
+		SET BCOUNT = BCOUNT + 1
+		WHERE BID = #{bId}
+	</update>
+	
+	<!-- 2_2. 게시물 상세보기용 쿼리문 -->
+	<select id="selectBoardDetail" resultMap="boardResultSet2">
+		SELECT BID, BTYPE, BTITLE, BCONTENT, M.USER_NAME AS B_USER_NAME,
+        	BCOUNT, B_CREATE_DATE, B_MODIFY_DATE, B_STATUS,
+        	RID, RCONTENT, REF_BID, M2.USER_NAME AS R_USER_NAME,
+        	R_CREATE_DATE, R_MODIFY_DATE, R_STATUS
+		FROM BOARD B
+		LEFT JOIN REPLY R ON(R.REF_BID = B.BID)
+		JOIN MEMBER M ON(B.BWRITER = M.MID)
+		LEFT JOIN MEMBER M2 ON(R.RWRITER = M2.MID)
+		WHERE B.BID=#{bId}
+		AND B_STATUS = 'Y'
+		ORDER BY RID DESC
+	</select>
+	
+	<!-- 3. 댓글 추가 -->
+	<!-- parameterType 속성은 optional이어서 작성하지 않아도 알아서 매핑됨 
+		resultType, resultMap 속성은 반드시 기재!! -->
+	<insert id="insertReply" parameterType="Reply">
+		INSERT INTO REPLY
+		VALUES(SEQ_RID.NEXTVAL, #{rContent}, #{refBid}, #{rWriter}, 
+			SYSDATE, SYSDATE, DEFAULT)
+	</insert>
+</mapper>

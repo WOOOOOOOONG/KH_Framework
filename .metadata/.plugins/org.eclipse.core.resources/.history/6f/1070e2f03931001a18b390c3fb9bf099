@@ -1,0 +1,61 @@
+package com.kh.board.model.service;
+
+import static com.kh.common.Template.getSqlSession;
+
+import java.util.ArrayList;
+
+import org.apache.ibatis.session.SqlSession;
+
+import com.kh.board.model.dao.BoardDao;
+import com.kh.board.model.exception.SelectBoardDetailException;
+import com.kh.board.model.exception.SelectBoardListException;
+import com.kh.board.model.vo.Board;
+import com.kh.board.model.vo.PageInfo;
+
+public class BoardService {
+
+	public int getListCount() throws SelectBoardListException {
+		SqlSession session = getSqlSession();
+		
+		int listCount = new BoardDao().getListCount(session);
+		
+		// 조회 성공 후 close
+		session.close();
+		
+		return listCount;
+	}
+
+	public ArrayList<Board> selectBoardList(PageInfo pi) throws SelectBoardListException {
+		SqlSession session = getSqlSession();
+		
+		ArrayList<Board> list = new BoardDao().selectBoardList(session, pi);
+		
+		session.close();
+		
+		return list;
+	}
+
+	public Board selectBoardDetail(int bId) throws SelectBoardDetailException {
+		SqlSession session = getSqlSession();
+		
+		BoardDao bDao = new BoardDao();
+		
+		// 1. 조회수 증가
+		int result = bDao.updateCount(session, bId);
+		
+		// 2. 조회수 증가 성공 시 해당 게시글 조회
+		Board b = null;
+		
+		if(result > 0) {
+			session.commit();
+			b = bDao.selectBoardDetail(session, bId);
+		}
+		
+		session.close();
+		
+		return b;
+	}
+	
+	
+
+}

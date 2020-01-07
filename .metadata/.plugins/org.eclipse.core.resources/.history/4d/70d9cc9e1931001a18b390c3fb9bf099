@@ -1,0 +1,25 @@
+package com.kh.board.model.service;
+
+import static com.kh.common.Template.getSqlSession;
+
+import org.apache.ibatis.session.SqlSession;
+
+import com.kh.board.model.dao.BoardDao;
+import com.kh.board.model.exception.SelectBoardListException;
+
+public class BoardService {
+
+	public int getListCount() throws SelectBoardListException {
+		SqlSession session = getSqlSession();
+		
+		int listCount = new BoardDao().getListCount(session);
+		
+		// 조회 성공 후 close
+		session.close();
+		
+		return listCount;
+	}
+	
+	
+
+}

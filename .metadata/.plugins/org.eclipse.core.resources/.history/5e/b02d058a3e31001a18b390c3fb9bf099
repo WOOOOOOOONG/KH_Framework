@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+"-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- mapper의 네임스페이스 먼저 지정. 네임 스페이스는 이 매퍼의 별칭 -->
+<mapper namespace="memberMapper">
+	<!-- 2. ResultMap 적용 시키기 -->
+	<!-- 
+		ResultSet에서 데이터를 가져올 때 작성 되는 JDBC 코드를 대부분 줄여주는 역할을 하며
+		DB와 자바 클래스를 매핑 시켜줄 때 사용한다.
+		
+		type : ResultSet을 담을 VO 클래스명으로 어떤 타입을 참조할 것인지 기술(alias 사용 가능)
+		id : 해당 ResultMap의 고유 아이디 => select문에서 resultMap 값으로 사용
+	 -->
+	<resultMap type="Member" id="memberResultSet">
+		<!-- property : 자바의 필드 변수 이름 / column : DB의 해당 컬럼 -->
+		<!-- DB의 기본키 -->
+		<id property="mid" column="MID"/>
+		<!-- DB의 일반 컬럼들 -->
+		<result property="userId" column="USER_ID"/>
+		<result property="userPwd" column="USER_PWD"/>
+		<result property="userName" column="USER_NAME"/>
+		<result property="email" column="EMAIL"/>
+		<result property="birthDay" column="BIRTHDAY"/>
+		<result property="gender" column="GENDER"/>
+		<result property="phone" column="PHONE"/>
+		<result property="address" column="ADDRESS"/>
+		<result property="enrollDate" column="ENROLL_DATE"/>
+		<result property="updateDate" column="UPDATE_DATE"/>
+		<result property="mStatus" column="M_STATUS"/>
+	</resultMap>
+
+	<!-- 1. select 구문 -->
+	<!-- 
+		id : 외부(DAO)에서 참조하기 위한 쿼리문의 고유 아이디(네임스페이스 내 유일한 구분자)
+		parameterType : 구문에 전달 될 파라미터의 패키지 경로를 포함한 전체 클래스명이나
+		별칭(mybatis-config.xml에 설정 된 alias 이용 가능)
+		resultType/resultMap : 쿼리 실행 후 조회 된 결과(ResultSet)를 자바에서 사용 되게끔 담는 객체
+	 -->
+	<!-- <select id="loginMember" parameterType="Member" resultType="Member">
+		SELECT * 
+		FROM MEMBER 
+		WHERE USER_ID = #{userId}
+		AND USER_PWD = #{userPwd}	
+	</select> -->
+	<!-- 
+		쿼리문은 기본적으로 preparedStatement이다.
+		?(위치 홀더) 대신 직접 파라미터로 전달 받은 객체의 값을 꺼낼 때 #{필드명}으로 값을
+		꺼낸다.
+		그리고 여러 줄로 줄바꿈 문자를 섞어 사용도 가능하다.
+		단, 세미콜론은 여기서도 에러를 유발하므로 주의!!!
+	 -->
+	 <!-- 해당 쿼리문의 수행 결과가 담긴 ResultSet은 resultType의 객체에 자동으로
+	 	mapping 되어 리턴 된다. 다만, DB에 존재하는 Member 테이블의 컬럼명과
+	 	자바에서의  Member 클래스의 필드명이 동일한 경우!! 
+	 	
+	 	현재는 Member 테이블과 Member 클래스의 명칭이 다르므로
+	 	resultType이 아닌 resultMap을 이용하여 명시적으로 컬럼명과 필드명을 mapping
+	 	시켜주는 작업이 필요하다!!! -->
+	 
+	 <!-- 3. resultMap을 적용한 loginMember -->
+	 <select id="loginMember" parameterType="Member" resultMap="memberResultSet">
+	 	SELECT *
+	 	FROM MEMBER
+	 	WHERE USER_ID = #{userId}
+	 	AND USER_PWD = #{userPwd}
+	 	AND M_STATUS = 'Y'
+	 </select>
+	 
+	<!-- 4. 회원 가입 -->
+	<!-- insert, update, delete는 설정할 수 있는 속성이 동일하다. -->
+	<!-- 리턴 되는 값은 무조건 정수형으로 변경 된 행의 수를 리턴한다. -->
+	<insert id="insertMember" parameterType="Member">
+		INSERT INTO MEMBER
+		VALUES(SEQ_MID.NEXTVAL, #{userId}, #{userPwd}, #{userName},
+			#{email}, #{birthDay}, #{gender}, #{phone}, #{address},
+			SYSDATE, SYSDATE, DEFAULT)
+	</insert>
+
+	<update id="updateMember" parameterType="Member">
+		UPDATE MEMBER
+   		SET USER_PWD = #{userPwd}, USER_NAME = #{userName}, EMAIL = #{email},
+   		    PHONE = #{phone}, ADDRESS = #{address}, UPDATE_DATE=SYSDATE
+   		WHERE MID = #{mid}
+	</update>
+	
+	<update id="deleteMember" parameterType="_int">
+		UPDATE MEMBER
+   		SET M_STATUS = 'N'
+   		WHERE MID = #{mid}
+	</update>
+	
+	<!-- 3. 댓글 추가 -->
+	<!-- parameterType 속성은 optional이어서 작성하지 않아도 알아서 매핑됨 
+		resultType, resultMap 속성은 반드시 기재!! -->
+	<insert id="insertReply">
+		INSERT INTO REPLY
+		VALUES(SEQ_RID.NEXTVAL, #{rContent), #{refBid}, #{rWriter}, 
+			SYSDATE, SYSDATE, 'Y'}
+	</insert>
+
+</mapper>

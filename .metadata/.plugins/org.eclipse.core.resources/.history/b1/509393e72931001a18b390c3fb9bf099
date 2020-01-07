@@ -1,0 +1,7 @@
+package com.kh.board.model.exception;
+
+public class selectBoardDetailException extends Exception {
+	public selectBoardDetailException(String message) {
+		
+	}
+}
