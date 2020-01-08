@@ -89,4 +89,33 @@
    		SET M_STATUS = 'N'
    		WHERE MID = #{mid}
 	</update>
+	
+	<!-- updateMember 동적 쿼리로 구성하기 -->
+	<update id="updateMember2" parameterType="Member">
+		UPDATE MEMBER
+		<!-- 1) set : 불필요한 콤마를 자동으로 제거한다. -->
+		<!-- <set> -->
+		<!-- 2) trim : suffixOverrides 속성을 , 로 설정하여 구문 
+			마지막에 제거할 값을 명시한다. -->
+		<trim prefix="SET" suffixOverrides=","> <!-- prefix:앞, suffix: 뒤 -->
+	   		<if test="userpwd != null">
+	   		USER_PWD = #{userPwd}, 
+	   		</if>
+	   		<if test="userName != null">
+	   		USER_NAME = #{userName}, 
+	   		</if>
+	   		<if test="email != null">
+	   		EMAIL = #{email},
+	   		</if>
+	   		<if test="phone != null"> 
+	   		PHONE = #{phone}, 
+	   		</if>
+	   		<if test="address != null">
+	   		ADDRESS = #{address}, 
+	   		</if>
+	   		<!-- UPDATE_DATE=SYSDATE -->
+	   		WHERE MID = #{mid}
+   		<!-- </set> -->
+   		</trim>
+	</update>
 </mapper>

@@ -6,11 +6,13 @@ import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 
 import com.kh.board.model.exception.InsertReplyException;
+import com.kh.board.model.exception.SearchBoardException;
 import com.kh.board.model.exception.SelectBoardDetailException;
 import com.kh.board.model.exception.SelectBoardListException;
 import com.kh.board.model.vo.Board;
 import com.kh.board.model.vo.PageInfo;
 import com.kh.board.model.vo.Reply;
+import com.kh.board.model.vo.SearchCondition;
 
 public class BoardDao {
 
@@ -102,6 +104,37 @@ public class BoardDao {
 			session.close();
 			throw new InsertReplyException("댓글 입력 실패!!");
 		}
+	}
+
+	// 4_1. 검색된 게시글 개수 조회용
+	public int getSearchResultListCount(SqlSession session, SearchCondition sc) throws SearchBoardException {
+		int listCount = 0;
+		
+		listCount = session.selectOne("boardMapper.selectSearchResultCount", sc);
+		
+		if(listCount <= 0) {
+			session.close();
+			throw new SearchBoardException("검색 결과의 카운트 조회 실패!!");
+		}
+		return listCount;
+	}
+
+	// 4_2. 검색된 게시글 목록 조회용
+	public ArrayList<Board> selectSearchResultList(SqlSession session, SearchCondition sc, PageInfo pi) throws SearchBoardException {
+		ArrayList<Board> list = null;
+		
+		int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit();
+		
+		RowBounds rowBounds = new RowBounds(offset, pi.getBoardLimit());
+		
+		list = (ArrayList)session.selectList("boardMapper.selectSearchResultList", sc, rowBounds);
+		
+		if(list == null) {
+			session.close();
+			throw new SearchBoardException("검색 결과 리스트 조회 실패!!");
+		}
+		
+		return list;
 	}
 
 }

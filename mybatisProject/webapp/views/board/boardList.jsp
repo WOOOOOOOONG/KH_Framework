@@ -42,6 +42,39 @@
 		<div class="outer">
 			<br>
 			<h1 align="center">게시판</h1>
+			
+			<!-- 3. 게시글 검색하기 -->
+			<div id="searchArea" align="center">
+				<label>검색조건</label>
+				<select id="searchCondition" name="searchCondition">
+					
+					<c:if test="${ searchCondition eq 'writer' }">
+						<c:set var="select1" value="selected"/>
+					</c:if>
+					<c:if test="${ searchCondition eq 'title' }">
+						<c:set var="select2" value="selected"/>
+					</c:if>
+					<c:if test="${ searchCondition eq 'content' }">
+						<c:set var="select2" value="selected"/>
+					</c:if>
+					<option>-------</option>
+					<option value="writer" ${ select1 }>작성자</option>
+					<option value="title" ${ select2 }>제목</option>
+					<option value="content" ${ select2 }>내용</option>
+				</select>
+				<input id="searchValue" type="search" value="${ searchValue }">
+				<button onclick="searchBoard()">검색하기</button>
+			</div>
+			<script>
+				function searchBoard() {
+					var searchCondition = $("#searchCondition").val();
+					var searchValue = $("#searchValue").val();
+					
+					location.href="search.bo?searchCondition="+searchCondition+
+							"&searchValue="+searchValue;
+				}
+			</script>
+			
 			<!-- 1. 게시글 리스트 보기 -->
 			<table id="boardArea" align="center">
 				<tr>
@@ -56,7 +89,7 @@
 					<tr>
 						<td>${ b.bId }</td>
 						<td>${ b.bTitle }</td>
-						<td>${ b.bContent }</td>
+						<td>${ b.userName }</td>
 						<td>${ b.bCount }</td>
 						<td>${ b.bCreateDate }</td>
 					</tr>
@@ -65,15 +98,36 @@
 			
 			<!-- 1_2. 게시물 리스트 페이징 부분 -->
 			<div class="pagingArea" align="center">
+			
+				<!-- 4. 검색 후 페이징 처리 -->
+				<!-- 4_1. 검색한 값이 있는지 없는지 여부에 따라 넘어갈 주소 값을 결정 -->
+				<c:if test="${ searchValue eq null }">
+					<!-- 검색 값이 없으면 selectBoardListServlet으로 넘어가도록 지정 -->
+					<c:set var="loc" value="/selectList.bo" scope="page"/>
+				</c:if>
+				<c:if test="${ searchValue ne null }">
+					<!-- 검색 값이 있으면 SearchBoardServlet으로 넘어가도록 지정 -->
+					<c:set var="loc" value="/search.bo" scope="page"/>
+				</c:if>
+			
 				<!-- [이전] -->
 				<c:if test="${ pi.currentPage <= 1 }">
 					<!-- 현재 페이지가 1페이지인 경우 이전 페이지가 없으므로 [이전] a태그 
 					비활성화(그냥 문자열로  출력) -->
 					[이전] &nbsp;
 				</c:if>
+				
+				<!-- 4_2. 페이징바 클릭시 이동하는 url을 위에서 설정한 loc로 변경 -->
 				<c:if test="${ pi.currentPage > 1 }">
-					<c:url var="blistBack" value="/selectList.bo">
+					<%-- <c:url var="blistBack" value="/selectList.bo"> --%>
+					<c:url var="blistBack" value="${ loc }">
 						<c:param name="currentPage" value="${ pi.currentPage - 1 }"/>
+						
+						<!-- 4_3. 검색 값이 있을 경우 파라미터 검색 조건, 값을 추가 -->
+						<c:if test="${ searchValue ne null }">
+							<c:param name="searchCondition" value="${ searchCondition }"/>
+							<c:param name="searchValue" value="${ searchValue }"/>
+						</c:if>
 					</c:url>
 					<a href="${ blistBack }">[이전]</a>
 				</c:if>
@@ -86,8 +140,14 @@
 					</c:if>
 					<!-- 현재 페이지가 아닌 페이지 -->
 					<c:if test="${ p ne pi.currentPage }">
-						<c:url var="blistCheck" value="/selectList.bo">
+						<%-- <c:url var="blistCheck" value="/selectList.bo"> --%>
+						<c:url var="blistCheck" value="${ loc }">
 							<c:param name="currentPage" value="${ p }"/>
+							
+							<c:if test="${ searchValue ne null }">
+								<c:param name="searchCondition" value="${ searchCondition }"/>
+								<c:param name="searchValue" value="${ searchValue }"/>
+							</c:if>
 						</c:url>
 						<a href="${ blistCheck }">[${p}]</a>
 					</c:if>
@@ -99,8 +159,14 @@
 					[다음]
 				</c:if>
 				<c:if test="${ pi.currentPage < pi.maxPage }">
-					<c:url var="blistEnd" value="selectList.bo">
+					<%-- <c:url var="blistEnd" value="selectList.bo"> --%>
+					<c:url var="blistEnd" value="${ loc }">
 						<c:param name="currentPage" value="${ pi.currentPage + 1 }"/>
+						
+						<c:if test="${ searchValue ne null }">
+							<c:param name="searchCondition" value="${ searchCondition }"/>
+							<c:param name="searchValue" value="${ searchValue }"/>
+						</c:if>
 					</c:url>
 					<a href="${ blistEnd }">[다음]</a>
 				</c:if>				
