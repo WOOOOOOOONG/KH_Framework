@@ -5,9 +5,14 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-5.1.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<!-- bcrpytPasswordEncoder -->
-	<bean id="bcrpyPasswordEncoder"
+	<!-- bcryptPasswordEncoder -->
+	<bean id="bcryptPasswordEncoder" 
 	class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
 	
-	<!-- web.xml에 가서 pre-loading할 수 있도록 작성 -->
+	<!-- web.xml에 가서 pre-loading 할 수 있도록 작성 -->
 </beans>
+
+
+
+
+

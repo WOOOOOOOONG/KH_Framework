@@ -5,7 +5,6 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-
 </head>
 <body>
 	<jsp:include page="../common/menubar.jsp"/>
@@ -33,20 +32,22 @@
 					<td><input type="password" name="pwd2"></td>
 				</tr>
 				<tr>
-					<td>* 성별</td>
-					<td><input type="radio" name="gender" value="M">남
-					<input type="radio" name="gender" value="F">여</td>
+					<td>성별</td>
+					<td>
+						<input type="radio" name="gender" value="M">남
+						<input type="radio" name="gender" value="F">여
+					</td>
 				</tr>
 				<tr>
-					<td>* 나이</td>
+					<td>나이</td>
 					<td><input type="number" name="age" min="20" max="100"></td>
 				</tr>
 				<tr>
-					<td>* 이메일</td>
+					<td>이메일</td>
 					<td><input type="email" name="email"></td>
 				</tr>
 				<tr>
-					<td>* 전화번호</td>
+					<td>전화번호</td>
 					<td><input type="tel" name="phone"></td>
 				</tr>
 				<!-- 주소는 도로명주소 API : postcodify를 이용해서 작성 -->
@@ -54,20 +55,16 @@
 					<td>우편번호</td>
 					<td>
 						<input type="text" name="post" class="postcodify_postcode5" size="6" />
-						<button type="button" id="postcodify_search_button">검색</button><br />
+						<button type="button" id="postcodify_search_button">검색</button>
 					</td>
 				</tr>
 				<tr>
-					<td>도로명주소</td>
-					<td>
-						<input type="text" name="address1" class="postcodify_address" value="" /><br />
-					</td>
+					<td>도로명 주소</td>
+					<td><input type="text" name="address1" class="postcodify_address" value="" /></td>
 				</tr>
 				<tr>
-					<td>상세주소</td>
-					<td>
-						<input type="text" name="address2" class="postcodify_extra_info" value="" /><br />
-					</td>
+					<td>상세 주소</td>
+					<td><input type="text" name="address2" class="postcodify_extra_info" value="" /></td>
 				</tr>
 				<tr>
 					<td colspan="2" align="center">
@@ -84,8 +81,11 @@
 			<a href="home.do">시작 페이지로 이동</a>
 		</div>
 	</div>
-	
+
+
 	<script src="//d1p7wdleee1q2z.cloudfront.net/post/search.min.js"></script>
 	<script> $(function() { $("#postcodify_search_button").postcodifyPopUp(); }); </script>
+
+
 </body>
 </html>

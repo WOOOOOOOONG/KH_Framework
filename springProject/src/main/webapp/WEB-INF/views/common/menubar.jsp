@@ -6,9 +6,11 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<!-- 메뉴바는 어느 페이지든 포함하고 있을테니 여기에서 contextPath 변수 선언 -->
-<c:set var="contextPath" value="${ pageContext.servletContext.contextPath }" scope="application"/>
-<link rel="stylesheet" href="${ contextPath }/resources/css/menubar-style.css" type="text/css">
+<!-- 메뉴바는 어느 페이지든 포함하고 있을 테니 여기에서 contextPath 변수 선언 -->
+<c:set var="contextPath" value="${ pageContext.servletContext.contextPath }"
+scope="application"/>
+<link rel="stylesheet" href="${ contextPath }/resources/css/menubar-style.css"
+type="text/css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </head>
 <body>
@@ -18,9 +20,10 @@
 		</script>
 		<c:remove var="msg"/>
 	</c:if>
+
 	<h1 align="center">Finally Spring!!!</h1>
 	<br>
-	<!-- 로그인 유저가 있는 경우/없는 경우 동시에 작업 -->
+	<!-- 로그인 유저가 있는 경우 / 없는 경우 동시에 작업 -->
 	<div class="loginArea" align="right">
 		<c:if test="${ empty sessionScope.loginUser }">
 			<form action="login.do" method="post">
@@ -55,9 +58,8 @@
 			</h3>
 		</c:if>
 	</div>
-	<!-- 가장 먼저 로그인, 로그아웃 기능을 구현한다
+	<!-- 가장 먼저 로그인, 로그아웃 기능을 구현한다.
 		우선 기존의 xml 방식을 확인해보기 위해 servlet-context.xml로 이동!!! -->
-	
 	
 	<!-- 회원 관련 서비스 구현 이후 구현할 메뉴바 -->
 	<c:url var="nlist" value="nlist.do"/>
@@ -70,5 +72,10 @@
 			<div class="menu"><a href="#">etc</a></div>
 		</div>
 	</div>
+
+
+
+
+
 </body>
 </html>

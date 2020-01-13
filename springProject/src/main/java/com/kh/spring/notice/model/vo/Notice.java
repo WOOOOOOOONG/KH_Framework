@@ -3,7 +3,7 @@ package com.kh.spring.notice.model.vo;
 import java.sql.Date;
 
 public class Notice {
-	private String nId;
+	private int nId;
 	private String nTitle;
 	private String nWriter;
 	private String nContent;
@@ -13,7 +13,7 @@ public class Notice {
 	
 	public Notice() {}
 
-	public Notice(String nId, String nTitle, String nWriter, String nContent, Date nCreateDate, Date nModifyDate,
+	public Notice(int nId, String nTitle, String nWriter, String nContent, Date nCreateDate, Date nModifyDate,
 			String filePath) {
 		super();
 		this.nId = nId;
@@ -25,11 +25,11 @@ public class Notice {
 		this.filePath = filePath;
 	}
 
-	public String getnId() {
+	public int getnId() {
 		return nId;
 	}
 
-	public void setnId(String nId) {
+	public void setnId(int nId) {
 		this.nId = nId;
 	}
 

@@ -22,7 +22,7 @@
 	</beans:bean>
 	
 	<!-- 자동 빈 스캐닝
-		지정된 패키지에 있는 @Component와 그 구체화 요소들을 스캔하여 bean으로 등록하는 기능 -->
+		지정 된 패키지에 있는 @Component와 그 구체화 요소들을 스캔하여 bean으로 등록하는 기능 -->
 	<context:component-scan base-package="com.kh.spring" />
 	
 	<!-- 기존 xml 빈 등록 방식으로 login.do 요청을 처리한다면
@@ -35,15 +35,15 @@
 				<beans:prop key="logout.do">logout</beans:prop>
 			</beans:props>
 		</beans:property>
-	</beans:bean>
-	위의 HandlerMapping에 해당하는 각각의 Controller 등록
-	<beans:bean id="login" class="com.kh.spring.member.controller.LoginController"/>
+	</beans:bean> -->
+	<!-- 위의 HandlerMapping에 해당하는 각각의 Controller 등록 -->
+	<!-- <beans:bean id="login" class="com.kh.spring.member.controller.LoginController"/>
 	<beans:bean id="logout" class="com.kh.spring.member.controller.LogoutController"/> -->
 	
 	<!-- 
-		위와 같이 작업한 후 각각의 기능에 해당하는 각 Controller 클래스를 만들어서 메소드로 작업해야 함.
-		이 방식은 해당 설정 파일에 등록된 bean들을 한 눈에 볼 수 있어 관리의 편의성이 높지만
-		bean 개수가 많아지면 xml 파일을 관리하기 어려워지며 여러 개발자가 같은 설정 파일을 수정하면
+		위와 같이 작업 한 후 각각의 기능에 해당하는 각 Controller 클래스를 만들어서 메소드로 작업해야 함
+		이 방식은 해당 설정 파일에 등록 된 bean들을 한 눈에 볼 수 있어 관리의 편의성이 높지만
+		bean 개수가 많아지만 xml 파일을 관리하기 어려워지며 여러 개발자가 같은 설정 파일을 수정하면
 		충돌이 발생하기 쉽다.
 		
 		==> 어노테이션을 이용한 방식으로 변경
@@ -52,7 +52,9 @@
 		을 붙여줌으로써 <annotation-driven/> <context:component-scan>이 자동으로
 		어노테이션이 붙어있는 것들을 스캔해서 빈으로 등록시켜준다.
 		
-		XML 방식처럼 각 기능에 맞는 controller 클래스들을 따로 만들어줄 필요가 없고,
+		XML 방식처럼 각 기능에 맞는 controller 클래스들을 따로 만들어줄 필요가 없고
 		하나의 controller로 통합하여 메소드 별로 각 기능이 실행되도록 작업하면 된다.
+		
 	 -->
+	
 </beans:beans>

@@ -117,4 +117,6 @@ public class Board {
 				+ ", originalFileName=" + originalFileName + ", renameFileName=" + renameFileName + ", bCount=" + bCount
 				+ ", bCreateDate=" + bCreateDate + ", bModifyDate=" + bModifyDate + ", bStatus=" + bStatus + "]";
 	}
+	
+	
 }

@@ -18,42 +18,49 @@
 					<td width="150">* 아이디</td>
 					<td width="450">
 						<input type="text" name="id" id="userId"
-						 value="${ loginUser.id }" readonly>
+						value="${ loginUser.id }" readonly>
 					</td>
 				</tr>
 				<tr>
 					<td>* 이름</td>
-					<td><input type="text" name="name" value="${ loginUser.name }" required></td>
+					<td><input type="text" name="name"
+					 value="${ loginUser.name }" required></td>
 				</tr>
 				<tr>
-					<td>* 성별</td>
-					<c:if test="${ loginUser.gender eq 'M' }">
-						<td><input type="radio" name="gender" value="M" checked>남
-						<input type="radio" name="gender" value="F">여</td>
+					<td>성별</td>
+					<c:if test="${loginUser.gender eq 'M' }">
+						<td>
+							<input type="radio" name="gender" value="M" checked>남
+							<input type="radio" name="gender" value="F">여
+						</td>
 					</c:if>
-					<c:if test="${ loginUser.gender eq 'F' }">
-						<td><input type="radio" name="gender" value="M">남
-						<input type="radio" name="gender" value="F" checked>여</td>
+					<c:if test="${loginUser.gender eq 'F' }">
+						<td>
+							<input type="radio" name="gender" value="M">남
+							<input type="radio" name="gender" value="F" checked>여
+						</td>
 					</c:if>
 				</tr>
 				<tr>
-					<td>* 나이</td>
-					<td><input type="number" name="age" min="20" max="100" value="${ loginUser.age }"></td>
+					<td>나이</td>
+					<td><input type="number" name="age" min="20" max="100"
+					value="${ loginUser.age }"></td>
 				</tr>
 				<tr>
-					<td>* 이메일</td>
-					<td><input type="email" name="email" value="${ loginUser.email }"></td>
+					<td>이메일</td>
+					<td><input type="email" name="email"
+					value="${ loginUser.email }"></td>
 				</tr>
 				<tr>
-					<td>* 전화번호</td>
-					<td><input type="tel" name="phone" value="${ loginUser.phone }"></td>
+					<td>전화번호</td>
+					<td><input type="tel" name="phone"
+					value="${ loginUser.phone }"></td>
 				</tr>
-				<!-- 주소는 도로명주소 API : postcodify를 이용해서 작성 -->
 				<c:forTokens var="addr" items="${ loginUser.address }" delims=","
-					varStatus="status">
+				varStatus="status">
 					<c:if test="${ status.index eq 0 }">
 						<c:set var="addr1" value="${ addr }"/>
-					</c:if>	
+					</c:if>
 					<c:if test="${ status.index eq 1 }">
 						<c:set var="addr2" value="${ addr }"/>
 					</c:if>
@@ -64,29 +71,18 @@
 				<tr>
 					<td>우편번호</td>
 					<td>
-						<input type="text" name="post" class="postcodify_postcode5" value="${ addr1 }" size="6" />
-						<button type="button" id="postcodify_search_button">검색</button><br />
+						<input type="text" name="post" class="postcodify_postcode5" 
+						value="${ addr1 }" size="6" />
+						<button type="button" id="postcodify_search_button">검색</button>
 					</td>
 				</tr>
 				<tr>
-					<td>도로명주소</td>
-					<td>
-						<input type="text" name="address1" class="postcodify_address" value="${ addr2 }" /><br />
-					</td>
-				</tr>
-				
-				<tr>
-					<td>상세주소</td>
-					<td>
-						<input type="text" name="address2" class="postcodify_extra_info" value="${ addr3 }" /><br />
-					</td>
+					<td>도로명 주소</td>
+					<td><input type="text" name="address1" class="postcodify_address" value="${ addr2 }" /></td>
 				</tr>
 				<tr>
-					<td colspan="2" align="center">
-						<button>가입하기</button>
-						&nbsp;
-						<input type="reset" value="작성취소">
-					</td>
+					<td>상세 주소</td>
+					<td><input type="text" name="address2" class="postcodify_extra_info" value="${ addr3 }" /></td>
 				</tr>
 				<tr>
 					<td colspan="2" align="center">
@@ -105,8 +101,10 @@
 			<a href="home.do">시작 페이지로 이동</a>
 		</div>
 	</div>
-	
+
+
 	<script src="//d1p7wdleee1q2z.cloudfront.net/post/search.min.js"></script>
 	<script> $(function() { $("#postcodify_search_button").postcodifyPopUp(); }); </script>
+
 </body>
 </html>

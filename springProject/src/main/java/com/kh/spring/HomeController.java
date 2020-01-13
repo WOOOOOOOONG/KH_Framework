@@ -24,12 +24,12 @@ public class HomeController {
 	 */
 	@RequestMapping(value = "/home.do", method = RequestMethod.GET)
 	public String home(Locale locale, Model model) {
-		// DispathcerServlet에게 뷰 정보를 전달하는 방법은 두가지가 있음
+		// DispatcherServlet에게 뷰 정보를 전달하는 방법은 두가지가 있음
 		// 1) View 타입의 오브젝트를 주는 방법
 		// 2) String 타입의 뷰 이름을 주는 방법
 		// 이름으로부터 실제로 사용할 뷰 객체를 결정해주는 뷰 리졸버가 필요
 		// 특정 뷰 리졸버를 빈으로 등록하지 않는다면,
-		// DispacherServlet은 기본 뷰 리졸버인 InternalResourceViewResolver를 사용
+		// DispatcherServlet은 기본 뷰 리졸버인 InternalResourceViewResolver를 사용
 		// servlet-context.xml 참조
 		
 		return "home";
