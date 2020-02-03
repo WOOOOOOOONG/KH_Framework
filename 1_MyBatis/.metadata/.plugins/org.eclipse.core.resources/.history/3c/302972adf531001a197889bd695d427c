@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+"-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="boardMapper">
+	<!-- 1_3. resultMap 추가 -->
+	<!-- 게시글 목록 조회용 resultMap -->
+	<resultMap id="boardResultSet" type="Board">
+		<id property="bId" column="BID"/>
+		<result property="bType" column="BTYPE"/>
+		<result property="bTitle" column="BTITLE"/>
+		<result property="bContent" column="BCONTENT"/>
+		<result property="bWriter" column="BWRITER"/>
+		<result property="userName" column="USER_NAME"/>
+		<result property="bCount" column="BCOUNT"/>
+		<result property="bCreateDate" column="B_CREATE_DATE"/>
+		<result property="bModifyDate" column="B_MODIFY_DATE"/>
+		<result property="bStatus" column="B_STATUS"/>
+	</resultMap>
+	
+	<!-- 2_3. 게시글 상세보기용 resultMap -->
+	<!-- 먼저 조회된 댓글들 매핑을 위해 replyResultSet resultMap 만들기 -->
+	<resultMap type="Reply" id="replyResultSet">
+		<id property="rId" column="RID"/>
+		<result property="rContent" column="RCONTENT"/>
+		<result property="refBid" column="REF_BID"/>
+		<result property="rWriter" column="RWRITER"/>
+		<result property="userName" column="R_USER_NAME"/>
+		<result property="rCreateDate" column="R_CREATE_DATE"/>
+		<result property="rModifyDate" column="R_MODIFY_DATE"/>
+		<result property="rStatus" column="RSTATUS"/>
+	</resultMap>
+	
+	<!--  -->
+	<resultMap id="boardResultSet2" type="Board">
+		<id property="bId" column="BID"/>
+		<result property="bType" column="BTYPE"/>
+		<result property="bTitle" column="BTITLE"/>
+		<result property="bContent" column="BCONTENT"/>
+		<result property="bWriter" column="BWRITER"/>
+		<result property="userName" column="B_USER_NAME"/><!-- 별칭 -->
+		<result property="bCount" column="BCOUNT"/>
+		<result property="bCreateDate" column="B_CREATE_DATE"/>
+		<result property="bModifyDate" column="B_MODIFY_DATE"/>
+		<result property="bStatus" column="B_STATUS"/>
+		<!-- 댓글 리스트 추가 -->
+		<collection property="replyList" javaType="java.util.ArrayList"
+		resultMap="replyResultSet"/>
+		<!-- id, result가 아닌 collection 태그로 작업하면
+		Board 클래스의 필드 값인 replyList(ArrayList)에 매핑시킬 수 있다. -->
+	</resultMap>
+	
+	<!-- 1_1. 게시글 수 조회용 쿼리문 -->
+	<select id="selectListCount" resultType="_int">
+		SELECT COUNT(*)
+		FROM BOARD
+		WHERE B_STATUS = 'Y'
+	</select>
+	
+	<!-- 1_2. 게시글 목록 조회용 쿼리문 -->
+	<!-- id가 boardResultSet인 resultMap을 위쪽에 추가 -->
+	<select id="selectBoardList" resultMap="boardResultSet">
+		SELECT *
+		FROM BOARD B
+		JOIN MEMBER M ON(B.BWRITER = M.MID)
+		WHERE B_STATUS = 'Y'
+		ORDER BY BID DESC
+		<!-- RowBounds라는 객체를 전달했으므로 페이징 처리는 따로 쿼리문에 구현할 필요 X -->
+	</select>
+
+	<!-- 2_1. 게시물 조회수 증가용 쿼리문 -->
+	<update id="updateBoardCount" parameterType="_int">
+		UPDATE BOARD
+		SET BCOUNT = BCOUNT + 1
+		WHERE BID = #{bId}
+	</update>
+	
+	<!-- 2_2. 게시물 상세보기용 쿼리문 -->
+	<select id="selectBoardDetail" resultMap="boardResultSet2">
+		SELECT BID, BTYPE, BTITLE, BCONTENT, M.USER_NAME AS B_USER_NAME,
+        	BCOUNT, B_CREATE_DATE, B_MODIFY_DATE, B_STATUS,
+        	RID, RCONTENT, REF_BID, M2.USER_NAME AS R_USER_NAME,
+        	R_CREATE_DATE, R_MODIFY_DATE, R_STATUS
+		FROM BOARD B
+		LEFT JOIN REPLY R ON(R.REF_BID = B.BID)
+		JOIN MEMBER M ON(B.BWRITER = M.MID)
+		LEFT JOIN MEMBER M2 ON(R.RWRITER = M2.MID)
+		WHERE B.BID=#{bId}
+		AND B_STATUS = 'Y'
+		ORDER BY RID DESC
+	</select>
+	
+	<!-- 3. 댓글 추가 -->
+	<!-- parameterType 속성은 optional이어서 작성하지 않아도 알아서 매핑됨 
+		resultType, resultMap 속성은 반드시 기재!! -->
+	<insert id="insertReply" parameterType="Reply">
+		INSERT INTO REPLY
+		VALUES(SEQ_RID.NEXTVAL, #{rContent}, #{refBid}, #{rWriter}, 
+			SYSDATE, SYSDATE, DEFAULT)
+	</insert>
+	
+	<!-- 4_1. 검색 결과 게시글 수 조회용 쿼리문 -->
+	<select id="selectSearchResultCount" resultType="_int">
+		<!-- WHERE 조건절에 동적 SQL을 적용하여 작성한다.
+		마이바티스의 핵심기능이라고 할 수 있으며 하단 탭을 참조하면 더 다양한 내용을 확인할 수 있다.
+		http://www.mybatis.org/mybatis-3/ko/dynamic-sql.html -->
+		SELECT COUNT(*)
+		FROM BOARD B
+		JOIN MEMBER M ON(B.BWRITER=M.MID)
+		WHERE B_STATUS = 'Y'
+		<!-- 1) if문으로 처리하는 방법 -->
+		<if test="writer != null">
+			AND USER_NAME LIKE '%' || #{writer} || '%' <!-- sql에서 like를 쓰기 위함 -->
+		</if>
+		<if test="title != null">
+			AND BTITLE LIKE '%' || #{title} || '%'
+		</if>
+		<if test="content != null">
+			AND BCONTENT LIKE '%' || #{content} || '%'
+		</if>
+	</select>
+	
+	<!-- 4_2. 검색 결과 게시글 목록 조회용 쿼리문 -->
+	<select id="selectSearchResultList" resultMap="boardResultSet">
+		<!-- 위의 쿼리에서는 동적 SQL로 if문을 사용했는데 이번에는 다른 방법을 사용해보자 -->
+		<!-- 2) choose, when, otherwise로 하는 방법 -->
+		SELECT *
+		FROM BOARD B
+		JOIN MEMBER M ON(B.BWRITER=M.MID)
+		WHERE B_STATUS = 'Y'
+		<choose>
+			<when test="writer != null">
+				AND USER_NAME LIKE '%' || #{writer} || '%'
+			</when>
+			<when test="title != null">
+				AND BTITLE LIKE '%' || #{title} || '%'
+			</when>
+			<otherwise>
+				AND BCONTENT LIKE '%' || #{content} || '%'
+			</otherwise>
+		</choose>
+		ORDER BY BID DESC
+	</select>
+	
+	<!-- 동적 쿼리 관련한 추가 설명 -->
+	<!-- 위에서 작성한 게시글 검색 조건에서 삭제 여부(B_STATUS) 조건이 빠지게 된다면 ? -->
+	<!-- 
+		1) if 조건 어느것도 만족하지 못한다면?
+		SELECT ...
+		WHERE 로 끝나 쿼리문 오류
+		
+		2) 일부 조건만 만족할 경우
+		- AND가 있다면
+		SELECT ...
+		WHERE AND ... 가 되어 쿼리문 오류
+		- AND가 없다면
+		SELECT ...
+		WHERE 조건 조건 이 되어 AND 구문이 없어 쿼리문 오류
+		
+		이와 같은 에러를 막기 위해
+		<trim> : 쿼리 구문의 특정 부분을 없앨 때
+		<where> : 기존 쿼리의 where절을 동적으로 구현할 때
+		<set> : 기존의 update set절을 동적으로 구현할 때
+	 -->
+	 <select id="selectSearchResultCount2" resultType="_int">
+		SELECT COUNT(*)
+		FROM BOARD B
+		JOIN MEMBER M ON(B.BWRITER=M.MID)
+		<!-- WHERE -->
+		<!-- 1) 단순히 where만을 추가하지만 만약 태그 안의 내용이 'AND'나 'OR'로 시작할 경우 자동으로 'AND'나 'OR'를 제거 -->
+		<!-- <where> -->
+		<!-- 2) 태그 안의 내용이 완성될 때 처음으로 시작할 단어(prefix)의 시작 시 제거해야 할 단어(prefixOverrides)를 명시하여
+		where과 같은 내용으로 구현할 수 있다. -->
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="writer != null">
+				AND USER_NAME LIKE '%' || #{writer} || '%'
+			</if>
+			<if test="title != null">
+				AND BTITLE LIKE '%' || #{title} || '%'
+			</if>
+			<if test="content != null">
+				AND BCONTENT LIKE '%' || #{content} || '%'
+			</if>
+		<!-- </where> -->
+		</trim>
+	</select>
+	
+	<!-- member-mapper의 updateMember 수정하기 -->
+	
+	<!-- foreach -->
+	<!-- 동적 쿼리를 구현할 때 collection에 대한 반복 처리 제공 -->
+	<!-- 
+		item : 반복 될 때 접근 가능한 각 객체 변수
+		index : 반복되는 횟수를 가리키는 변수, 0부터 순차적으로 증가
+		collection : 전달받은 인자로 반복에 쓰이는 Collection 객체, List나 Array만 가능
+		open : 해당 구문이 시작될 때 삽입할 문자열
+		separator : 반복되는 객체를 나열할 때 사용할 구분자
+		close : 해당 구문이 종료될 때 삽입할 문자열
+	 -->
+	 <select id="searchBoardwords" resultMap="boardResultSet">
+	 	SELECT *
+	 	FROM BOARD B
+	 	JOIN MEMBER M ON(B.BWRITER=M.MID)
+	 	WHERE B_STATUS='Y'
+	 	AND BTITLE IN
+	 	<foreach item="item" index="index" collection="list"
+	 		open="(" separator="," close=")">#{item}</foreach>
+	 </select>
+</mapper>

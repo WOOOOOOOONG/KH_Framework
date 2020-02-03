@@ -1,0 +1,116 @@
+package com.kh.board.model.dao;
+
+import java.util.ArrayList;
+
+import org.apache.ibatis.session.RowBounds;
+import org.apache.ibatis.session.SqlSession;
+
+import com.kh.board.model.exception.InsertReplyException;
+import com.kh.board.model.exception.SelectBoardDetailException;
+import com.kh.board.model.exception.SelectBoardListException;
+import com.kh.board.model.vo.Board;
+import com.kh.board.model.vo.PageInfo;
+import com.kh.board.model.vo.Reply;
+import com.kh.board.model.vo.SearchCondition;
+
+public class BoardDao {
+
+	public int getListCount(SqlSession session) throws SelectBoardListException {
+		int listCount = 0;
+		
+		listCount = session.selectOne("boardMapper.selectListCount");
+		// board-mapper.xml 작성 + mybatis-config에 mapper 추가
+		
+		if(listCount <= 0) {
+			// 조회 된 게시글 수가 없다면 session 닫은 뒤 예외 발생 시키기
+			session.close();
+			throw new SelectBoardListException("게시글 조회 실패!!");
+		}
+		return listCount;
+	}
+
+	public ArrayList<Board> selectBoardList(SqlSession session, PageInfo pi) throws SelectBoardListException {
+		ArrayList<Board> list = null;
+		
+		// JSP/Servlet에서는 쿼리문의 rownum 조건을 통해 조회했으나
+		// 마이바티스에서는 페이징 처리를 위해 RowBounds라는 클래스를 제공한다.
+		// RowBounds => offset과 limit 값을 넘겨받아 페이징 처리를 쉽게 구현할 객체
+		
+		// * offset - 몇 개의 게시글을 건너 뛰고 조회를 할지
+		int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit();
+		
+		RowBounds rowBounds = new RowBounds(offset, pi.getBoardLimit());
+		
+		// 첫번째 인자 : 쿼리문이 존재하는 '매퍼의 네임 스페이스.쿼리문 아이디'
+		// 두번째 인자 : 조회시 필요한 데이터
+		// 세번째 인자 : RowBounds 객체
+		list = (ArrayList)session.selectList("boardMapper.selectBoardList", null, rowBounds);
+		
+		if(list == null) {
+			// 게시글 조회 실패 시 세션 닫고 예외 발생
+			session.close();
+			throw new SelectBoardListException("게시물 조회 실패!!");
+		}
+		
+		return list;
+	}
+
+	// 2_1. 게시글 상세 조회 시 조회수 증가용
+	public int updateCount(SqlSession session, int bId) {
+		int result = 0;
+		
+		result = session.update("boardMapper.updateBoardCount", bId);
+		
+		if(result <= 0) {
+			// 조회수 증가 실패 시
+			session.rollback();
+			session.close();
+			try {
+				throw new SelectBoardDetailException("게시글 조회수 증가 실패!!");
+			} catch (SelectBoardDetailException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return result;
+	}
+
+	// 2_2. 게시글 상세 조회용 메소드
+	public Board selectBoardDetail(SqlSession session, int bId) throws SelectBoardDetailException {
+		Board b = null;
+		
+		// bId에 해당하는 게시글을 조회해 오는데 이 때 그 해당 게시글에 달려있는 댓글도 다 조회해올 것
+		b = session.selectOne("boardMapper.selectBoardDetail", bId);
+		
+		System.out.println("board = " + b);
+		if(b == null) {
+			session.close();
+			throw new SelectBoardDetailException("게시글 상세보기 실패!!");
+		}
+		
+		return b;
+	}
+
+	// 3_1. 댓글 추가
+	public void insertReply(SqlSession session, Reply r) throws InsertReplyException {
+		int result = 0;
+		
+		result = session.update("boardMapper.insertReply", r);
+
+		if(result <= 0) {
+			session.rollback();
+			session.close();
+			throw new InsertReplyException("댓글 입력 실패!!");
+		}
+	}
+
+	// 4_1. 검색된 게시글 개수 조회용
+	public int getSearchResultListCount(SqlSession session, SearchCondition sc) {
+		int listCount = 0;
+		
+		listCount = session.selectOne("boardMapper.selectSearchResultCount", sc);
+		return 0;
+	}
+
+}

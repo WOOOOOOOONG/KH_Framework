@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Script version="1.0" type="xscript5.1"><![CDATA[/* Common Script */
+// 시작 날짜와 끝 날짜를 매개변수로 받고
+// 두 일자의 차이를 리턴하는 함수(공통기능)
+this.dayDiff = function(calFrom, calTo) {
+	var fromDate = new Date();
+	var toDate = new Date();
+	var calDate;
+	var day = 1000 * 60 * 60 * 24;
+	
+	fromDate.setFullYear(calFrom.getYear());
+	fromDate.setMonth(calFrom.getMonth()-1);
+	fromDate.setDate(calFrom.getDay());
+	
+	toDate.setFullYear(calTo.getYear());
+	toDate.setMonth(calTo.getMonth()-1);
+	toDate.setDate(calTo.getDay());
+	
+	calDate = fromDate.getTime() - toDate.getTime();
+	
+	return Math.abs(calDate/day);
+}]]></Script>

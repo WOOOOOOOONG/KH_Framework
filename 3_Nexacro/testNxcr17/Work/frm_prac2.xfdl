@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="frm_prac2" width="1280" height="820" titletext="New Form">
+    <Layouts>
+      <Layout height="820" mobileorientation="landscape" width="1280">
+        <Grid id="Grid00" taborder="0" left="60" top="78" width="444" height="302" binddataset="gds_emp" autofittype="col">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="48"/>
+                <Column size="80"/>
+                <Column size="80"/>
+              </Columns>
+              <Rows>
+                <Row size="24" band="head"/>
+                <Row size="24"/>
+                <Row size="24" band="summ"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="NO"/>
+                <Cell col="1" text="EMPL_ID"/>
+                <Cell col="2" text="FULL_NAME"/>
+              </Band>
+              <Band id="body">
+                <Cell expr="currow + 1"/>
+                <Cell col="1" text="bind:EMPL_ID"/>
+                <Cell col="2" text="bind:FULL_NAME"/>
+              </Band>
+              <Band id="summary">
+                <Cell text="expr:nexacro.getApplication().gds_emp.getRowCount()"/>
+                <Cell col="1"/>
+                <Cell col="2"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="Static00" taborder="1" text="FullName" left="547" top="73" width="203" height="57" background="skyblue" color="white" font="normal 700 12pt/normal &quot;Arial&quot;" textAlign="center"/>
+        <Static id="Static01" taborder="2" text="Empl ID" left="547" top="140" width="203" height="57" background="skyblue" color="white" font="normal 700 12pt/normal &quot;Arial&quot;" textAlign="center"/>
+        <Static id="Static02" taborder="3" text="Hire Date" left="547" top="207" width="203" height="57" background="skyblue" color="white" font="normal 700 12pt/normal &quot;Arial&quot;" textAlign="center"/>
+        <Static id="Static03" taborder="4" text="Married" left="547" top="273" width="203" height="57" background="skyblue" color="white" font="normal 700 12pt/normal &quot;Arial&quot;" textAlign="center"/>
+        <Static id="Static04" taborder="5" text="Salary" left="547" top="340" width="203" height="57" background="skyblue" color="white" font="normal 700 12pt/normal &quot;Arial&quot;" textAlign="center"/>
+        <Static id="Static05" taborder="6" text="Gender" left="547" top="407" width="203" height="57" background="skyblue" color="white" font="normal 700 12pt/normal &quot;Arial&quot;" textAlign="center"/>
+        <Static id="Static06" taborder="7" text="Dept Id" left="547" top="474" width="203" height="57" background="skyblue" color="white" font="normal 700 12pt/normal &quot;Arial&quot;" textAlign="center"/>
+        <Edit id="Edit00" taborder="8" left="790" top="73" width="210" height="57"/>
+        <MaskEdit id="MaskEdit00" taborder="9" left="790" top="140" width="210" height="57" type="string" format="AA-###"/>
+        <Calendar id="Calendar00" taborder="10" left="789" top="210" width="211" height="57"/>
+        <CheckBox id="CheckBox00" taborder="11" text="결혼 여부" left="790" top="281" width="210" height="49"/>
+        <MaskEdit id="MaskEdit01" taborder="12" left="787" top="340" width="212" height="58" format="#,###"/>
+        <Radio id="Radio00" taborder="13" left="788" top="412" width="210" height="56" innerdataset="innerdataset" codecolumn="codecolumn" datacolumn="datacolumn" direction="vertical">
+          <Dataset id="innerdataset">
+            <ColumnInfo>
+              <Column id="codecolumn" size="256"/>
+              <Column id="datacolumn" size="256"/>
+            </ColumnInfo>
+            <Rows>
+              <Row>
+                <Col id="codecolumn">M</Col>
+                <Col id="datacolumn">남자</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">W</Col>
+                <Col id="datacolumn">여자</Col>
+              </Row>
+            </Rows>
+          </Dataset>
+        </Radio>
+        <Combo id="Combo00" taborder="14" text="" left="789" top="475" width="211" height="58" innerdataset="gds_dept" codecolumn="code" datacolumn="name" onitemchanged="Combo00_onitemchanged"/>
+        <Static id="Static08" taborder="15" text="Memo" left="547" top="612" width="203" height="57" background="skyblue" color="white" font="normal 700 12pt/normal &quot;Arial&quot;" textAlign="center"/>
+        <TextArea id="TextArea01" taborder="16" left="791" top="612" width="209" height="61"/>
+        <Static id="Static09" taborder="17" text="Pos ID" left="547" top="543" width="203" height="57" background="skyblue" color="white" font="normal 700 12pt/normal &quot;Arial&quot;" textAlign="center"/>
+        <Combo id="Combo01" taborder="18" text="" left="790" top="544" width="210" height="56" innerdataset="gds_pos" codecolumn="POS_CD" datacolumn="POS_NAME" onitemchanged="Combo01_onitemchanged"/>
+      </Layout>
+    </Layouts>
+    <Bind>
+      <BindItem id="item0" compid="Edit00" propid="value" datasetid="gds_emp" columnid="FULL_NAME"/>
+      <BindItem id="item1" compid="MaskEdit00" propid="value" datasetid="gds_emp" columnid="EMPL_ID"/>
+      <BindItem id="item2" compid="Calendar00" propid="value" datasetid="gds_emp" columnid="HIRE_DATE"/>
+      <BindItem id="item3" compid="CheckBox00" propid="value" datasetid="gds_emp" columnid="MARRIED"/>
+      <BindItem id="item4" compid="MaskEdit01" propid="value" datasetid="gds_emp" columnid="SALARY"/>
+      <BindItem id="item5" compid="Radio00" propid="value" datasetid="gds_emp" columnid="GENDER"/>
+      <BindItem id="item6" compid="Combo00" propid="value" datasetid="gds_emp" columnid="DEPT_CD"/>
+      <BindItem id="item8" compid="TextArea01" propid="value" datasetid="gds_emp" columnid="MEMO"/>
+      <BindItem id="item7" compid="Combo01" propid="value" datasetid="gds_pos" columnid="POS_NAME"/>
+    </Bind>
+    <Script type="xscript5.1"><![CDATA[]]></Script>
+  </Form>
+</FDL>

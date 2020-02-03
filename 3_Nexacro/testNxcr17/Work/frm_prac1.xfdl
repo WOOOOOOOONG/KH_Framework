@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="frm_prac1" width="1280" height="720" titletext="New Form">
+    <Layouts>
+      <Layout height="720" mobileorientation="landscape" width="1280">
+        <Combo id="Combo00" taborder="0" text="Combo00" left="435" top="120" width="150" height="20" onitemchanged="Combo00_onitemchanged" innerdataset="ds_photo" codecolumn="url" datacolumn="name"/>
+        <ImageViewer id="ImageViewer00" taborder="1" text="ImageViewer00" left="310" top="120" width="90" height="100"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="ds_photo">
+        <ColumnInfo>
+          <Column id="name" type="STRING" size="256"/>
+          <Column id="url" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="name">아이스크림</Col>
+            <Col id="url">imagerc::icecream.png</Col>
+          </Row>
+          <Row>
+            <Col id="name">아바타</Col>
+            <Col id="url">imagerc::m_avata.jpg</Col>
+          </Row>
+          <Row>
+            <Col id="name">겨울왕국</Col>
+            <Col id="url">imagerc::m_frozen.jpg</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+    </Objects>
+    <Script type="xscript5.1"><![CDATA[// Combo 선택 시 ImageViewer의 이미지를 변경
+this.fn_imageChanger = function() {
+	// 현재 콤보 박스에 선택된 값을 가져온다
+	var url = this.Combo00.value;
+	// 받아온 url과 set_image함수를 통해 이미지 변경
+	this.ImageViewer00.set_image(url);
+}
+
+// EventHandler를 통해 바인딩하기
+// Combo 컴포넌트에 'onitemchanged' 이벤트를 바인딩
+// (이벤트명, 함수, 타겟)
+this.Combo00.setEventHandler("onitemchanged", this.fn_imageChanger, this);]]></Script>
+  </Form>
+</FDL>

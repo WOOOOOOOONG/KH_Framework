@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="java.sql.Date"/>
+<fullyQualifiedTypeName name="com.kh.board.model.exception.SelectBoardDetailException"/>
+<fullyQualifiedTypeName name="com.kh.member.model.vo.Member"/>
+<fullyQualifiedTypeName name="com.kh.board.model.exception.InsertReplyException"/>
+<fullyQualifiedTypeName name="com.kh.common.Pagination"/>
+</qualifiedTypeNameHistroy>

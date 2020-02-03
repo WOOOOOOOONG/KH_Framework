@@ -1,0 +1,83 @@
+package com.kh.board.controller;
+
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.kh.board.model.exception.SearchBoardException;
+import com.kh.board.model.service.BoardService;
+import com.kh.board.model.vo.PageInfo;
+import com.kh.board.model.vo.SearchCondition;
+import com.kh.common.Pagination;
+
+/**
+ * Servlet implementation class SearchBoardServlet
+ */
+@WebServlet("/search.bo")
+public class SearchBoardServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public SearchBoardServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// 다수의 서비스를 요청하기 위해 참조변수 선언
+		BoardService bService = new BoardService();
+		
+		String condition = request.getParameter("searchCondition");
+		String value = request.getParameter("searchValue");
+		
+		// 검색 조건을 저장하기 위핸 클래스 작성 및 객체 생성
+		SearchCondition sc = new SearchCondition();
+		
+		// 전달받은 searchCondition에 해당하는 파라미터에 따라 setter를 이용하여
+		// value 값을 적용시킨다.
+		if(condition.equals("writer"))
+			sc.setWriter(value);
+		else if(condition.equals("title"))
+			sc.setTitle(value);
+		else if(condition.equals("content"))
+			sc.setContent(value);
+		
+		// 해당 검색 결과 얻어온 리스트들을 보여줄 때도 마찬가지로 페이징 처리가 필요하다.
+		// 게시판 목록 조회와 동일할 페이징 처리를 한다.
+		int currentPage = 1;
+		if(request.getParameter("currentPage") != null) {
+			currentPage = Integer.parseInt(request.getParameter("currentPage"));
+		}
+		
+		// 검색 결과에 해당되는 게시글 갯수 조회
+		try {
+			int listCount = bService.getSearchResultListCount(sc);
+			
+			// 페이지 정보가 담겨있는 PageInfo를 받기 위해 Pagination의 static 메소드 호출
+			PageInfo pi = Pagination.getPageInfo(currentPage, listCount);
+			
+			System.out.println("listCount = " + listCount);
+			System.out.println("pi = " + pi);
+		} catch (SearchBoardException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doGet(request, response);
+	}
+
+}

@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XCSS version="1.0"><![CDATA[.Static
+{
+	background : burlywood;
+	-nexa-text-align : center;
+	-nexa-vertical-align : middle;
+	font : normal bold  14pt/normal "Arial";
+	border-radius : 3px;
+	box-shadow : 0px 0px 5px #ffffff;
+	
+}
+.Static[status=mouseover]
+{
+	background : sienna;
+	color : #ffffff;
+	cursor : pointer;
+	
+}
+]]></XCSS>

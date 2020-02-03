@@ -1,0 +1,81 @@
+-환경설정 순서
+jsp/servlet에서 했던 workspace 세팅 -> jstl, ojdbc, mybatis 라이브러리 추가 -> 프로젝트 최상단에 source folder로 resources 추가 -> resources 안에 mybatis-config.xml을 config dtd로 생성 -> member, board mapper 추가 -> 싱글톤을 적용한 Template 클래스 생성
+
+- mybatis-config.xml
+<properties resource="/driver.properties"/>
+<settings>
+	<setting name="jdbcTypeForNull" value="NULL"/>
+</settings>
+<typeAliases>
+	<typeAlias type="com.kh.member.model.vo.Member" alias="Member"/>
+	<typeAlias type="com.kh.board.model.vo.Board" alias="Board"/>
+</typeAliases>
+
+<enviroments default="development">
+	<enviroment id="development">
+		<transactionManager type="JDBC"/>
+		<dataSource type="POOLED">
+			<property name="driver" value="${driver}"/>
+			<property name="url" value="${url}"/>
+			<property name="username" value="${username}"/>
+			<property name="password" value="${password}"/>
+		</dataSource type="POOLED">
+	</enviroment>
+</enviroments>
+
+<mappers>
+	<mapper resource="/mappers/member-mapper.xml"/>
+	<mapper resource="/mappers/board-mapper.xml"/>
+</mappers>
+
+-driver 내용
+driver=oracle.jdbc.driver.OracleDriver
+url=jdbc:oracle:thin:@localhost:1521:xe
+username=mybatis
+password=mybatis
+
+-Template
+public class Template {
+	public static SqlSession getSqlSession() {
+		SqlSession session = null;
+		String resource = "/mybatis-config.xml";
+		try {
+			InputStream stream = Resources.getResourceAsStream(resource);
+			SqlSessionFactoryBuilder builder = new SqlSessionFactoryBuilder();
+			SqlSessionFactory factory = builder.build(stream);
+			// build : config.xml 파일 불러오기
+			session = factory.openSession(false);
+		}catch (IOException e) {
+			e.printStackTrace();
+		}
+		return session;
+	}
+}
+
+-mybatis란
+데이터 입력, 조회, 수정, 삭제(CRUD)를 보다 편하게 하기 위해 xml로 구조화한 mapper 설정 파일을 통해 JDBC를 구현한 영속성(오래도록 계속 유지되는 성질) 프레임워크
+
+-mybatis 동작 구조
+SessionFactoryBulider(mybatis-config.xml) -> Session Factory -> Session(mapper.xml) -> 쿼리문 실행
+
+-mybatis-config.xml과 mapper.xml의 역할
+mybatis-config.xml : 클래스 별칭 설정, DB 연결 설정, Sql 구문 경로 설정
+mapper.xml : Sql 쿼리문 설정, 각 패키지마다 존재
+
+-mybatis 내장 별칭
+클래스가 아닌 자료형 앞에는 모두 _가 붙음.(String, ArrayList 등 클래스 제외, 클래스들은 모두 소문자로 string, arraylist로 사용)
+
+-POLLED, UNPOOLED 차이점
+POOLED : 최초 커넥션 객체 생성 시 해당 정보를 pool 영역에 저장 후 이후에 커넥션 객체 생성시 이를 재사용하여 커넥션 객체 생성시 DB와 연결 구축에 걸리는 시간이 단축되지만, 단순한 로직을 수행하는 객체를 만들기에는 설정해야 할 정보가 많음.
+UNPOOLED : 커넥션 객체를 별도로 저장하지 않고, 객체 호출 시 매번 생성해 사용하는 방법으로, 커넥션 연결이 많지 않은 코드 작성 시 간단하게 구현되지만, 매번 새로운 커넥션 객체를 생성하므로 속도가 상대적으로 느린 단점이 있다.
+JNDI : mybatis에서 커넥션 객체를 생성해 관리하지 않고 웹 앱의 설정을 따르겠다는 의미
+
+-쿼리문 태그 주요속성
+-select
+id : 구문을 찾기 위해 사용될 수 있는 네임스페이스 내 유일한 구분자
+parameterType: 구문에 전달될 파라미터의 클래스명(경로 포함)이나 별칭
+resultType: 리턴되는 타입의 패키지 경로를 포함한 전체 클래스명이나 별칭
+resultMap: 사용할 resultMap의 id를 기술
+flushCache/useCache: mybatis 내 cache라는 저장소를 내장하여 반복되는 쿼리의 호출이나 결과를 미리 저장해두어 재호출에 소요되는 시간을 절약함
+-insert, update, delete
+id, parameterType, flushCache (결과는 int이기 때문에 resultType, resultMap이 없음)

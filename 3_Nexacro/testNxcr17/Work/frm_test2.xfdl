@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="frm_test2" width="1280" height="1210" titletext="New Form" color="blue">
+    <Layouts>
+      <Layout height="1210" mobileorientation="landscape" width="1280">
+        <Div id="Div00" taborder="0" left="110" top="85" width="200" height="150" background="blue">
+          <Layouts>
+            <Layout>
+              <Static id="Static00" taborder="0" text="글쓰기" left="30" top="35" width="120" height="60" color="white"/>
+            </Layout>
+          </Layouts>
+        </Div>
+        <Edit id="Edit00" taborder="1" left="116" top="279" width="140" height="20" onchanged="Edit00_onchanged" displaynulltext="이름을 입력하세요" readonly="false" password="true"/>
+        <Static id="Static00" taborder="2" text="String Type : 7자리 알파벳" left="360" top="85" width="210" height="60" background="beige" font="normal 12pt/normal &quot;Arial&quot;" textAlign="center"/>
+        <Static id="Static01" taborder="3" text="Number Type : 세자리마다 콤마" left="360" top="170" width="210" height="60" background="beige" font="normal 12pt/normal &quot;Arial&quot;" textAlign="center"/>
+        <Static id="Static02" taborder="4" text="String Type : 휴대폰 번호" left="355" top="259" width="210" height="60" background="beige" font="normal 12pt/normal &quot;Arial&quot;" textAlign="center"/>
+        <MaskEdit id="MaskEdit00" taborder="5" left="615" top="85" width="215" height="60" type="string" format="#,###"/>
+        <MaskEdit id="MaskEdit01" taborder="6" left="615" top="175" width="215" height="60"/>
+        <MaskEdit id="MaskEdit02" taborder="7" left="613" top="259" width="215" height="60" type="string" format="###-####-####"/>
+        <CheckBox id="CheckBox00" taborder="8" text="메일 수신여부" left="125" top="370" width="150" height="20" value="true"/>
+        <Radio id="Radio00" taborder="9" left="135" top="435" width="280" height="50" innerdataset="innerdataset" codecolumn="codecolumn" datacolumn="datacolumn" direction="vertical">
+          <Dataset id="innerdataset">
+            <ColumnInfo>
+              <Column id="codecolumn" size="256"/>
+              <Column id="datacolumn" size="256"/>
+            </ColumnInfo>
+            <Rows>
+              <Row>
+                <Col id="codecolumn">COM</Col>
+                <Col id="datacolumn">컴퓨터</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">LAP</Col>
+                <Col id="datacolumn">노트북</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">TAB</Col>
+                <Col id="datacolumn">태블릿</Col>
+              </Row>
+            </Rows>
+          </Dataset>
+        </Radio>
+        <Combo id="Combo00" taborder="10" text="" left="135" top="520" width="135" height="30" innerdataset="innerdataset" codecolumn="codecolumn" datacolumn="datacolumn" index="-1">
+          <Dataset id="innerdataset">
+            <ColumnInfo>
+              <Column id="codecolumn" size="256"/>
+              <Column id="datacolumn" size="256"/>
+            </ColumnInfo>
+            <Rows>
+              <Row>
+                <Col id="codecolumn">COM</Col>
+                <Col id="datacolumn">컴퓨터</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">LAB</Col>
+                <Col id="datacolumn">노트북</Col>
+              </Row>
+              <Row>
+                <Col id="codecolumn">TAB</Col>
+                <Col id="datacolumn">태블릿</Col>
+              </Row>
+            </Rows>
+          </Dataset>
+        </Combo>
+        <ImageViewer id="ImageViewer00" taborder="11" text="ImageViewer00" left="135" top="580" width="90" height="100" image="URL(&quot;imagerc::icecream.png&quot;)" onclick="ImageViewer00_onclick" stretch="fit"/>
+        <Button id="Button00" taborder="12" text="도넛" left="275" top="575" width="120" height="50" onclick="Button00_onclick"/>
+        <Button id="Button01" taborder="13" text="아이스크림" left="275" top="645" width="120" height="50" onclick="Button01_onclick"/>
+        <Calendar id="Calendar00" taborder="14" left="145" top="820" width="150" height="20" showmonthspin="false" onchanged="Calendar00_onchanged"/>
+        <Combo id="Combo01" taborder="15" text="" left="145" top="760" width="150" height="20"/>
+        <Grid id="Grid00" taborder="16" left="510" top="750" width="230" height="180" binddataset="ds_items" autofittype="col" autosizingtype="none">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="80"/>
+                <Column size="80"/>
+              </Columns>
+              <Rows>
+                <Row size="24" band="head"/>
+                <Row size="24"/>
+                <Row size="24" band="summ"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="CODE"/>
+                <Cell col="1" text="VALUE"/>
+              </Band>
+              <Band id="body">
+                <Cell text="bind:CODE"/>
+                <Cell col="1" text="bind:VALUE"/>
+              </Band>
+              <Band id="summary">
+                <Cell text="expr:comp.parent.ds_items.getRowCount()"/>
+                <Cell col="1"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.1"><![CDATA[// 클릭했을 때 도넛 이미지로 변경
+this.Button00_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	this.ImageViewer00.set_image("imagerc::doughnut.jpg");
+	this.ImageViewer00.set_stretch("fit");
+};
+
+// 클릭했을 때 아이스크림 이미지로 변경
+this.Button01_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	this.ImageViewer00.set_image("imagerc::icecream.png");
+	this.ImageViewer00.set_stretch("fit");
+};
+
+// Dataset
+// 넥사크로 플랫폼 애플리케이션 내에서 데이터를 관리하거나 서버와 통신할 때
+// 주고받는 데이터 형식으로 사용자가 입력하거나 서버에서 가져온 데이터를 보관
+// 하고 데이터의 변경(추가/수정/삭제) 상태를 관리
+
+// 선언 범위
+// 전역 : 해당 Application에서 사용하는 모든 Form에서 접근 가능
+// form : 해당 form에서만 접근 가능
+// innerDataset : 해당 컴포넌트에서만 접근 가능
+
+// 전역에 접근
+// nexacro.getApplication().gds_items.getRowCount();
+// form에 접근
+// comp.parent.ds_items.getRowCount();]]></Script>
+    <Objects>
+      <Dataset id="ds_items">
+        <ColumnInfo>
+          <Column id="CODE" type="STRING" size="256"/>
+          <Column id="VALUE" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="CODE">COM</Col>
+            <Col id="VALUE">컴퓨터</Col>
+          </Row>
+          <Row>
+            <Col id="CODE">LAP</Col>
+            <Col id="VALUE">노트북</Col>
+          </Row>
+          <Row>
+            <Col id="CODE">TAB</Col>
+            <Col id="VALUE">태블릿</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+    </Objects>
+  </Form>
+</FDL>
