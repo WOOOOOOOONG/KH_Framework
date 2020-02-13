@@ -67,7 +67,7 @@
         <Combo id="Combo00" taborder="14" text="" left="789" top="475" width="211" height="58" innerdataset="gds_dept" codecolumn="code" datacolumn="name" onitemchanged="Combo00_onitemchanged"/>
         <Static id="Static08" taborder="15" text="Memo" left="547" top="612" width="203" height="57" background="skyblue" color="white" font="normal 700 12pt/normal &quot;Arial&quot;" textAlign="center"/>
         <TextArea id="TextArea01" taborder="16" left="791" top="612" width="209" height="61"/>
-        <Static id="Static09" taborder="17" text="Pos ID" left="547" top="543" width="203" height="57" background="skyblue" color="white" font="normal 700 12pt/normal &quot;Arial&quot;" textAlign="center"/>
+        <Static id="Static09" taborder="17" text="Pos ID" left="517" top="563" width="203" height="57" background="skyblue" color="white" font="normal 700 12pt/normal &quot;Arial&quot;" textAlign="center"/>
         <Combo id="Combo01" taborder="18" text="" left="790" top="544" width="210" height="56" innerdataset="gds_pos" codecolumn="POS_CD" datacolumn="POS_NAME" onitemchanged="Combo01_onitemchanged"/>
       </Layout>
     </Layouts>

@@ -40,6 +40,8 @@
     <Service prefixid="font" type="resource" url="./_resource_/_font_/" version="0" communicationversion="0" cachelevel="session"/>
     <Service prefixid="Base" type="form" cachelevel="session" url="./Base/" version="0" communicationversion="0"/>
     <Service prefixid="Work" type="form" cachelevel="session" url="./Work/" version="0" communicationversion="0"/>
+    <Service prefixid="FrameBase" type="form" url="./FrameBase/" cachelevel="session" version="0" communicationversion="0"/>
+    <Service prefixid="xLib" type="js" cachelevel="session" url="./xLib/" version="0" communicationversion="0"/>
   </Services>
   <Protocols/>
   <Update/>

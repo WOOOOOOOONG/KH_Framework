@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ADL version="2.0">
+  <Application id="App_Desktop" screenid="Desktop_screen">
+    <Layout>
+      <MainFrame id="mainframe" showtitlebar="true" showstatusbar="true" width="1280" height="720" titletext="DownThreeFrame">
+        <VFrameSet id="FrameSet" separatesize="100,*,50">
+          <Frames>
+            <ChildFrame id="TopFrame" title="" showtitlebar="false" showstatusbar="false" formurl="FrameBase::Form_Top.xfdl"/>
+            <ChildFrame id="WorkFrame" title="" showtitlebar="false" showstatusbar="false" formurl="FrameBase::Form_Work.xfdl"/>
+            <ChildFrame id="BottomFrame" title="" showtitlebar="false" showstatusbar="false" formurl="FrameBase::Form_Bottom.xfdl"/>
+          </Frames>
+        </VFrameSet>
+      </MainFrame>
+    </Layout>
+    <Style url="xcssrc::mainCss.xcss"/>
+  </Application>
+  <Script type="xscript5.1"><![CDATA[// 비밀번호 유혀성 체크 함수
+this.gfn_passwordValidate = function(str) {
+	var objRegExp = new RegExp("^(?=.*[a-zA-Z])(?=.*[!@#$%^&*_+])(?=.*[0-9]).{8,20}$");
+	return objRegExp.test(str);
+}]]></Script>
+</ADL>

@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="Form_Login" width="380" height="290" titletext="New Form" onload="testPop_onload">
+    <Layouts>
+      <Layout height="290" mobileorientation="landscape" width="380">
+        <Div id="Div00" taborder="0" text="" left="11" top="11" width="359" height="265" border="1px solid">
+          <Layouts>
+            <Layout>
+              <ImageViewer id="ImageViewer00" taborder="0" text="" left="24" top="22" width="50" height="53" image="URL(&quot;imagerc::spring_icon.png&quot;)" stretch="fixaspectratio"/>
+              <Static id="Static00" taborder="1" text="Spring &amp; Nexacro Project Login Form" left="84" top="45" width="264" height="32" font="normal 12pt/normal &quot;Arial&quot;"/>
+              <Static id="Static01" taborder="2" text="ID" left="24" top="103" width="73" height="41" background="whitesmoke" font="normal 12pt/normal &quot;Arial&quot;" textAlign="center"/>
+              <Static id="Static02" taborder="3" text="PWD" left="24" top="158" width="73" height="40" background="whitesmoke" font="normal 12pt/normal &quot;Arial&quot;" textAlign="center"/>
+              <Edit id="Edit00" taborder="4" left="109" top="103" width="222" height="41"/>
+              <Edit id="Edit01" taborder="5" left="109" top="157" width="222" height="41" password="true"/>
+              <Button id="Button00" taborder="6" text="로그인" left="33" top="217" width="116" height="31" onclick="Div00_Button00_onclick"/>
+              <Button id="Button01" taborder="7" text="취소" left="180" top="217" width="116" height="31" cssclass="cancel" onclick="Div00_Button01_onclick"/>
+            </Layout>
+          </Layouts>
+        </Div>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.1"><![CDATA[var objApp = nexacro.getApplication(); // 전역 variable에 접근 가능
+var objEnv = nexacro.getEnvironment(); // 서비스 속성에 접근 가능
+
+this.testPop_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+	// 해당 frame의 위치를 화면 중앙으로 배치
+	var nLeft = Math.round((objApp.mainframe.width - this.width) / 2
+							+ nexacro.toNumber(objApp.mainframe.left));
+	var nTop = Math.round((objApp.mainframe.height - this.height) / 2
+							+ nexacro.toNumber(objApp.mainframe.top));
+							
+	this.getOwnerFrame().set_left(nLeft);
+	this.getOwnerFrame().set_top(nTop);
+};
+
+// 로그인 버튼 클릭시
+this.Div00_Button00_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	this.fn_login();
+};
+
+this.fn_login = function() {
+	// 로그인 트랜잭션
+	var strSvcId = "login";
+	var strSvcUrl = objEnv.services["svcurl"].url + "member/memberLogin.do";
+	var inData = "";
+	var userId = this.Div00.form.Edit00.value;
+	var password = this.Div00.form.Edit01.value;
+	var inVariable = "userId=" + userId + " password=" + password;
+	var outData = "ds_member=ds_member ds_result=ds_result";
+	var callBackFnc = "fnCallback";
+	
+	this.transaction(strSvcId, strSvcUrl, inData, outData, inVariable, callBackFnc);
+}
+
+// 취소 버튼 클릭시
+this.Div00_Button01_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	this.close();
+};
+
+this.fnCallback = function(svcID, errorCode, errorMsg) {
+// 	trace("svcID : " + svcID);
+// 	trace("errorCode : " + errorCode);
+// 	trace(this.ds_result.getColumn(0, "msg"));
+
+	// 이전의 전역 데이터 셋 제거 후 다시 담기
+	objApp.gds_member.clearData();
+	objApp.gds_member.mergeData(this.ds_member);
+	
+	if(errorCode != 0 || this.ds_result.getColumn(0, "msg") != undefined) {
+		alert(this.ds_result.getColumn(0, "msg"));
+	}else {
+		alert("로그인 성공!");
+		
+		// 부모 프레임 위의 form 추출
+		var parentForm = objApp.mainframe.FrameSet.TopFrame.form;
+		
+		parentForm.Static01.set_text(this.ds_member.getColumn(0, "name"));
+		parentForm.Button00.set_text("로그아웃");
+		parentForm.Button00.set_cssclass("cancel");
+		parentForm.Button01.set_text("회원정보 수정");
+		
+		// Home으로 이동
+		parentForm.goMenu(100, "Home", "FrameBase::Form_Work.xfdl");
+	}
+	
+	//모달 창 닫기
+	this.close();
+}
+]]></Script>
+    <Objects>
+      <Dataset id="ds_member"/>
+      <Dataset id="ds_result"/>
+    </Objects>
+  </Form>
+</FDL>

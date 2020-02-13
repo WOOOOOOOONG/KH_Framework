@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<AppVariables version="2.0">
+  <Datasets>
+    <Dataset id="gds_member">
+      <ColumnInfo>
+        <Column id="id" type="STRING" size="256"/>
+        <Column id="pwd" type="STRING" size="256"/>
+        <Column id="name" type="STRING" size="256"/>
+        <Column id="email" type="STRING" size="256"/>
+        <Column id="gender" type="STRING" size="256"/>
+        <Column id="age" type="INT" size="256"/>
+        <Column id="phone" type="STRING" size="256"/>
+        <Column id="address" type="STRING" size="256"/>
+        <Column id="enrollDate" type="DATE" size="256"/>
+        <Column id="updateDate" type="DATE" size="256"/>
+        <Column id="mStatus" type="STRING" size="256"/>
+      </ColumnInfo>
+    </Dataset>
+    <Dataset id="gds_board">
+      <ColumnInfo>
+        <Column id="bId" type="STRING" size="256"/>
+      </ColumnInfo>
+      <Rows>
+        <Row/>
+      </Rows>
+    </Dataset>
+  </Datasets>
+  <Variables/>
+</AppVariables>

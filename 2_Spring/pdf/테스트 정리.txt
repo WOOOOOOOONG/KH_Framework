@@ -1,0 +1,55 @@
+- pom.xml 추가
+<!-- Test -->
+<!-- 1_1. 스프링 프로젝트 생성 시 자동으로 dependency가 생성 스프링 프레임워크 버전(5.0.6 이상)과 호환성 때문에 4.12로 변경한다. 1_2. Calculator 클래스 작성하러 가기 -->
+<dependency>
+<groupId>junit</groupId>
+<artifactId>junit</artifactId>
+<version>4.12</version>
+<scope>test</scope>
+</dependency>
+
+<!-- 2_1. test 관련 의존 설정 -->
+<!-- 2_2. test-context.xml을 spring/appServlet/ 하위에 작성 -->
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-test -->
+<dependency>
+	<groupId>org.springframework</groupId>
+	<artifactId>spring-test</artifactId>
+	<version>${org.springframework-version}</version>
+	<scope>test</scope>
+</dependency>
+
+- test-context.xml
+<!-- 2_2. Calculator 클래스 빈 등록 -->
+<bean class="com.kh.spring.test.junit.Calculator" id="calc"/>
+
+- 단위 테스트(unit test)란
+개발 과정에서 진행되는 테스트로, 구현된 모듈의 기능 수행 여부를 판정하고, 내부에 존재하는 논리적 오류를 검출하는 테스트
+
+- 하는 방법
+// 간이 방법
+1. 테스트할 클래스를 우클릭해 'Junit Test Case' 선택 후 '클래스명 + Test'로 생성
+2. 테스트할 클래스 선언
+3. assertEquals 함수를 이용해 자유롭게 테스트
+
+// 테스트 클래스 작성 방법
+@RunWith(SpringJUnit4ClassRunner.class) // 스프링이 제공하는 JUnitRunner를 이용해 테스트 실행
+@ContextConfiguration("file:src/main/webapp/WEB-INF/spring/appServlet/test-context.xml")
+// 자동으로 만들어 줄 애플리케이션 컨텍스트의 설정 파일 경로 지정
+테스트클래스 위에 두 어노테이션 작성.
+@Autowried 해야되고, 텍스트 메소드마다 컨텍스트를 생성하지 않도록 컨텍스트를 캐싱함.
+
+@Test
+메소드 작성() {
+	이전과 동일 메소드로 테스트
+}
+
+
+- assertEquals
+assertEquals(a, b) : A와 B가 일치함을 확인
+assertEquals(expected, actual, delta) : 예상값, 실제값, 허용오차 
+assertArrayEquals(a, b) : 배열 A와 B가 일치함을 확인
+assertSame(a, b) : 객체 A와 B가 같은 객체임을 확인 <-> assertNotSame(a, b)
+ => assertEquals 메서드는 두 객체의 값이 같은지 검사하는데 반해
+assertSame 메서드는 두 객체가 동일한지 확인(== 연산자)
+assertTrue(a) : 조건 A가 참인지 확인 <-> assertFalse(a)
+assertNotNull(a) : 해당 값이 null이 아닌가를 확인 <-> assertNull(a)   

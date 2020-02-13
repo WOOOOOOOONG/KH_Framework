@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ADL version="2.0">
+  <Application id="App_MDI" screenid="screen00">
+    <Layout>
+      <MainFrame id="mainframe" showtitlebar="true" showstatusbar="true" width="1280" height="720" titletext="TopLeftFrame">
+        <VFrameSet id="VFrameSet00" separatesize="100,*">
+          <Frames>
+            <ChildFrame id="TopFrame" showtitlebar="false" showstatusbar="false" formurl="FrameBase::Form_Top.xfdl"/>
+            <HFrameSet id="HFrameSet00" separatesize="200, *">
+              <Frames>
+                <ChildFrame id="LeftFrame" showtitlebar="false" showstatusbar="false" formurl="FrameBase::Form_Left.xfdl"/>
+                <ChildFrame id="WorkFrame" showtitlebar="false" showstatusbar="false" formurl="FrameBase::Form_Work.xfdl"/>
+              </Frames>
+            </HFrameSet>
+          </Frames>
+        </VFrameSet>
+      </MainFrame>
+    </Layout>
+  </Application>
+  <Script type="xscript5.1"><![CDATA[// application 전역 함수로 변경하기
+var objApp = nexacro.getApplication();
+this.gfn_open = function(id, url) {
+	// 1. ChildFrame이 위치한 경로 생성
+	var parentFrame = objApp.mainframe.VFrameSet00.HFrameSet00.WorkFrame;
+	// 2. ChildFrame의 formurl 설정
+	parentFrame.set_formurl(url);
+}
+]]></Script>
+</ADL>

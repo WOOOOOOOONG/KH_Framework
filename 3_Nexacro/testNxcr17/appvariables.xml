@@ -141,6 +141,44 @@
         </Row>
       </Rows>
     </Dataset>
+    <Dataset id="gds_menu">
+      <ColumnInfo>
+        <Column id="m_id" type="STRING" size="256"/>
+        <Column id="m_name" type="STRING" size="256"/>
+        <Column id="m_level" type="STRING" size="256"/>
+        <Column id="m_url" type="STRING" size="256"/>
+      </ColumnInfo>
+      <Rows>
+        <Row>
+          <Col id="m_id">1</Col>
+          <Col id="m_name">메뉴_1</Col>
+          <Col id="m_level">0</Col>
+        </Row>
+        <Row>
+          <Col id="m_id">2</Col>
+          <Col id="m_name">폼_1</Col>
+          <Col id="m_level">1</Col>
+          <Col id="m_url">Work::frm_prac1.xfdl</Col>
+        </Row>
+        <Row>
+          <Col id="m_id">3</Col>
+          <Col id="m_name">메뉴_2</Col>
+          <Col id="m_level">0</Col>
+        </Row>
+        <Row>
+          <Col id="m_id">4</Col>
+          <Col id="m_name">폼_1</Col>
+          <Col id="m_level">1</Col>
+          <Col id="m_url">Work::frm_prac2.xfdl</Col>
+        </Row>
+        <Row>
+          <Col id="m_id">5</Col>
+          <Col id="m_name">폼_2</Col>
+          <Col id="m_level">1</Col>
+          <Col id="m_url">Work::frm_prac3.xfdl</Col>
+        </Row>
+      </Rows>
+    </Dataset>
   </Datasets>
   <Variables/>
 </AppVariables>

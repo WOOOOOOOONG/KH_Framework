@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="devForm" width="1280" height="720" titletext="New Form" onload="devForm_onload">
+    <Layouts>
+      <Layout height="720" mobileorientation="landscape" width="1280">
+        <Static id="Static00" taborder="0" text="개발자 목록 페이지" left="68" top="42" width="256" height="48" font="normal 20pt/normal &quot;Arial&quot;" background="whitesmoke" textAlign="center"/>
+        <Grid id="Grid00" taborder="1" left="53" top="110" width="317" height="216" binddataset="ds_dev" autofittype="col">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="48"/>
+                <Column size="80"/>
+              </Columns>
+              <Rows>
+                <Row size="24" band="head"/>
+                <Row size="24"/>
+              </Rows>
+              <Band id="head">
+                <Cell text="NO"/>
+                <Cell col="1" text="성명"/>
+              </Band>
+              <Band id="body">
+                <Cell expr="currow + 1"/>
+                <Cell col="1" text="bind:devName"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+        <Static id="Static02" taborder="2" text="개발자명" left="408" top="90" width="90" height="38" font="normal 12pt/normal &quot;Arial&quot;" background="whitesmoke" textAlign="center"/>
+        <Static id="Static01" taborder="3" text="나이" left="408" top="141" width="90" height="38" font="normal 12pt/normal &quot;Arial&quot;" background="whitesmoke" textAlign="center"/>
+        <Static id="Static03" taborder="4" text="이메일" left="408" top="191" width="90" height="38" font="normal 12pt/normal &quot;Arial&quot;" background="whitesmoke" textAlign="center"/>
+        <Static id="Static04" taborder="5" text="성별" left="408" top="241" width="90" height="38" font="normal 12pt/normal &quot;Arial&quot;" background="whitesmoke" textAlign="center"/>
+        <Static id="Static05" taborder="6" text="사용언어" left="408" top="291" width="90" height="38" font="normal 12pt/normal &quot;Arial&quot;" background="whitesmoke" textAlign="center"/>
+        <Edit id="Edit00" taborder="7" left="519" top="89" width="208" height="39"/>
+        <Edit id="Edit01" taborder="8" left="519" top="139" width="208" height="39"/>
+        <Edit id="Edit02" taborder="9" left="519" top="192" width="208" height="39" onchanged="Edit02_onchanged"/>
+        <Radio id="Radio00" taborder="10" left="521" top="246" width="205" height="35" innerdataset="ds_gender" codecolumn="code" datacolumn="data" direction="vertical"/>
+        <Edit id="Edit03" taborder="11" left="519" top="289" width="208" height="39" onchanged="Edit02_onchanged"/>
+        <Button id="Button00" taborder="12" text="수정" left="217" top="379" width="138" height="49" onclick="Button00_onclick"/>
+        <Button id="Button01" taborder="13" text="삭제" left="400" top="379" width="138" height="49" cssclass="cancel" onclick="Button01_onclick"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="ds_dev">
+        <ColumnInfo>
+          <Column id="devNo" type="STRING" size="256"/>
+          <Column id="devName" type="STRING" size="256"/>
+          <Column id="devAge" type="INT" size="256"/>
+          <Column id="devEmail" type="STRING" size="256"/>
+          <Column id="devGender" type="STRING" size="256"/>
+          <Column id="devLang" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+      <Dataset id="ds_gender">
+        <ColumnInfo>
+          <Column id="code" type="STRING" size="256"/>
+          <Column id="data" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="code">M</Col>
+            <Col id="data">남성</Col>
+          </Row>
+          <Row>
+            <Col id="code">F</Col>
+            <Col id="data">여성</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="ds_result"/>
+    </Objects>
+    <Bind>
+      <BindItem id="item0" compid="Edit00" propid="value" datasetid="ds_dev" columnid="devName"/>
+      <BindItem id="item1" compid="Edit01" propid="value" datasetid="ds_dev" columnid="devAge"/>
+      <BindItem id="item2" compid="Edit02" propid="value" datasetid="ds_dev" columnid="devEmail"/>
+      <BindItem id="item3" compid="Radio00" propid="value" datasetid="ds_dev" columnid="devGender"/>
+      <BindItem id="item4" compid="Edit03" propid="value" datasetid="ds_dev" columnid="devLang"/>
+    </Bind>
+    <Script type="xscript5.1"><![CDATA[// 최초 로드시 개발자 목록 불러오기
+this.devForm_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+	this.transaction(
+		"devList",
+		"svcurl::dev/selectDevList.do",
+		"",
+		"ds_dev=ds_dev",
+		"",
+		"callBackFunc"
+	);
+};
+
+// 수정 btn
+this.Button00_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	this.transaction(
+		"devUpdate",
+		"svcurl::dev/updateDev.do",
+		"ds_dev=ds_dev:U", // update된 '행'만 전송
+		"ds_result=ds_result",
+		"",
+		"callBackFunc"
+	);
+};
+
+// 삭제 btn
+this.Button01_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	var devNo = this.ds_dev.getColumn(this.ds_dev.rowposition, "devNo");
+	// transaction
+	// 선택한 행의 값을 ds_dev에서 삭제한다
+	this.ds_dev.deleteRow(this.ds_dev.rowposition);
+	this.transaction(
+		"devDelete",
+		"svcurl::dev/deleteDev.do",
+		"",
+		"ds_result=ds_result",
+		"devNo="+devNo,
+		"callBackFunc"
+	);
+};
+
+this.callBackFunc = function(svcID, errorCode, errorMsg) {
+	switch(svcID) {
+		case "devList" :
+			trace("통신 확인");
+			trace("등록된 개발자 수 " + this.ds_dev.getRowCount());
+		break;
+		case "devUpdate" : 
+			trace("수정 학인");
+			trace(this.ds_result.getColumn(0, "result"));
+		break;
+		case "devDelete" :
+			trace("삭제 확인");
+		break;
+	}
+}]]></Script>
+  </Form>
+</FDL>

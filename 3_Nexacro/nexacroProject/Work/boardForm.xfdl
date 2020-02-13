@@ -1,0 +1,182 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="boardForm" width="1280" height="720" titletext="New Form" onload="boardForm_onload">
+    <Layouts>
+      <Layout height="720" mobileorientation="landscape" width="1280">
+        <Static id="Static00" taborder="0" text="게시글 목록 페이지" left="68" top="42" width="256" height="48" font="normal 20pt/normal &quot;Arial&quot;" background="whitesmoke" textAlign="center"/>
+        <Div id="Div00" taborder="1" text="Div00" left="70" top="111" width="734" height="376" border="1px solid silver">
+          <Layouts>
+            <Layout>
+              <Grid id="Grid00" taborder="0" left="13" top="16" width="702" height="313" binddataset="ds_board" autofittype="col" nodatatext="자료가 없습니다" oncellclick="fn_boardDetail">
+                <Formats>
+                  <Format id="default">
+                    <Columns>
+                      <Column size="80"/>
+                      <Column size="80"/>
+                      <Column size="80"/>
+                      <Column size="80"/>
+                    </Columns>
+                    <Rows>
+                      <Row size="24" band="head"/>
+                      <Row size="24"/>
+                    </Rows>
+                    <Band id="head">
+                      <Cell text="글번호"/>
+                      <Cell col="1" text="제목"/>
+                      <Cell col="2" text="작성자"/>
+                      <Cell col="3" text="작성일"/>
+                    </Band>
+                    <Band id="body">
+                      <Cell text="bind:bId"/>
+                      <Cell col="1" text="bind:bTitle"/>
+                      <Cell col="2" text="bind:bWriter"/>
+                      <Cell col="3" text="bind:bCreateDate" displaytype="date"/>
+                    </Band>
+                  </Format>
+                </Formats>
+              </Grid>
+              <Button id="page1" taborder="1" text="1" left="166" top="338" width="73" height="22" cssclass="pageing"/>
+              <Button id="page2" taborder="2" text="2" left="239" top="338" width="73" height="22" cssclass="pageing"/>
+              <Button id="page3" taborder="3" text="3" left="319" top="339" width="73" height="22" cssclass="pageing"/>
+              <Button id="page4" taborder="4" text="4" left="389" top="339" width="73" height="22" cssclass="pageing"/>
+              <Button id="page5" taborder="5" text="5" left="466" top="339" width="73" height="22" cssclass="pageing"/>
+              <Button id="pageNext" taborder="6" text="&gt;&gt;" left="536" top="338" width="73" height="22" cssclass="pageing"/>
+              <Button id="pagePrev" taborder="7" text="&lt;&lt;" left="89" top="339" width="73" height="22" cssclass="pageing"/>
+            </Layout>
+          </Layouts>
+        </Div>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="ds_board">
+        <ColumnInfo>
+          <Column id="bId" type="STRING" size="256"/>
+          <Column id="bTitle" type="STRING" size="256"/>
+          <Column id="bWriter" type="STRING" size="256"/>
+          <Column id="bCreateDate" type="DATE" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="ds_listInfo"/>
+    </Objects>
+    <Script type="xscript5.1"><![CDATA[var objApp = nexacro.getApplication();
+
+var currentPage = 0; // 현재 페이지
+var prevPageNumber = 0; // 페이징바 자체가 이전 페이지로 넘어갈 때의 숫자
+var nextPageNumber = 0; // 페이징바 자체가 다음 페이지로 넘어갈 때의 숫자
+
+// 해당 폼이 로딩될 때 boardList 가져오기
+this.boardForm_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+	this.fn_paging(1);
+	currentPage = this.ds_listInfo.getColumn(0, "currentPage");
+};
+
+// 페이징 처리 트랜잭션
+this.fn_paging = function(currentPage) {
+	this.ds_board.clearData();
+	this.ds_listInfo.clearData();
+	
+	this.transaction(
+		"boardList",
+		"svcurl::board/boardList.do",
+		"",
+		"ds_board=ds_board ds_listInfo=ds_listInfo",
+		"currentPage="+currentPage,
+		"fnCallback"		
+	);
+}
+
+this.fnCallback = function(svcID, errorCode, errorMsg) {
+	if(svcID == "boardList") {
+		trace("통신 확인");
+		trace(this.ds_board.getRowCount()); // 리턴값 확인
+		currentPage = this.ds_listInfo.getColumn(0, "currentPage");
+		trace(currentPage); // 현재 페이지 확인
+		
+		// 1. 이전 페이지 버튼 이벤트 등록(<<)
+		if(currentPage < 6) {
+			// << 버튼 비활성화
+			this.Div00.form.pagePrev.set_enable(false);
+		}else {
+			var btnPrev = this.Div00.form.pagePrev; // btnObj 가져오기
+			btnPrev.set_enable(true); // 다시 활성화
+			
+			btnPrev.addEventHandler("onclick", this.fn_btnPrev, this); // 이벤트 바인딩
+			
+			// 이젠 페이지 변수값 변경
+			prevPageNumber = this.ds_listInfo.getColumn(0, "startPage") - 5;
+		}
+		
+		// 2. 다음 페이지 버튼 이벤트 등록(>>)
+		if(this.ds_listInfo.getColumn(0, "endPage") >= this.ds_listInfo.getColumn(0, "maxPage")) {
+				// >> 버튼 비활성화
+				this.Div00.form.pageNext.set_enable(false);
+		}else {
+			var btnNext = this.Div00.form.pageNext; // btnObj 가져오기
+			btnNext.set_enable(true); // 다시 활성화
+			
+			btnNext.addEventHandler("onclick", this.fn_btnNext, this);
+			// 다음 페이지 변수값 변경
+			nextPageNumber = this.ds_listInfo.getColumn(0, "endPage") + 1;
+		}
+		
+		// 3. 반복문을 이용해 페이지 숫자 설정
+		for(var i = 0; i < 5; i++) {
+			var btnObj = this.Div00.form.lookup("page" + (i+1)); // 아이디 값 전달하여 btnObj 가져오기
+			
+			var startPageNumber = this.ds_listInfo.getColumn(0, "startPage");
+			
+			// 만약 남은 페이지가 5개가 되지 않는다면 숫자를 눈에 보이지 않게 처리
+			if(startPageNumber + i > this.ds_listInfo.getColumn(0, "maxPage")) {
+				btnObj.set_visible(false);
+			}else {
+				// 페이지 이동 이벤트 걸기
+				btnObj.addEventHandler("onclick", this.fn_pageClick, this);
+				btnObj.set_text(startPageNumber + i); // 숫자 바꾸기
+				btnObj.set_visible(true); // 다시 눈에 보이게 처리
+				
+				// 현재 페이지의 버튼 색 변경
+				if(currentPage == startPageNumber + i) {
+					btnObj.set_color("red");
+				}else {
+					btnObj.set_color();
+				}
+			}
+		}
+	}
+}
+
+// 1. 이전 페이지 함수
+this.fn_btnPrev = function() {
+	trace("이전 페이지 버튼 확인 : " + prevPageNumber);
+	this.fn_paging(prevPageNumber);
+}
+
+// 2. 다음 페이지 함수
+this.fn_btnNext = function() {
+	trace("다음 페이지 버튼 확인 : " + nextPageNumber);
+	this.fn_paging(nextPageNumber);
+}
+
+// 3. 페이지 이동 함수
+this.fn_pageClick = function(obj:nexacro.Button) {
+	trace("페이지 이동 확인 : " + obj.text);
+	this.fn_paging(obj.text);
+}
+
+// bboardDetail로 이동하기
+this.fn_boardDetail = function(obj:nexacro.Grid,e:nexacro.GridClickEventInfo)
+{
+	var bId = obj.getCellText(obj.getSelectedRows(), 0); // 행, 열
+	trace("선택된 게시글 번호 : " + bId);
+	
+	objApp.gds_board.setColumn(0, 0, bId);
+	trace("값 저장 확인 : " + objApp.gds_board.getColumn(0, 0));
+	
+	var topForm = objApp.mainframe.FrameSet.TopFrame.form;
+	// boardDetail로 이동
+	topForm.goMenu(303, "게시글 상세보기", "Work::boardDetail.xfdl");
+};
+]]></Script>
+  </Form>
+</FDL>

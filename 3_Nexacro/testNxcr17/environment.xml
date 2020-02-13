@@ -3,6 +3,7 @@
   <Environment themeid="theme::default">
     <ScreenDefinition>
       <Screen id="Desktop_screen" type="desktop" themeid="theme::default"/>
+      <Screen id="screen00" type="desktop"/>
     </ScreenDefinition>
     <Variables/>
     <Cookies/>

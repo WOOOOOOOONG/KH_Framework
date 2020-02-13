@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="Form_Top" width="1280" height="50" titletext="Form_Top">
+    <Layouts>
+      <Layout width="1280" height="50" screenid="screen00">
+        <ImageViewer id="ImageViewer00" taborder="0" text="ImageViewer00" left="0" top="0" width="150" height="50" stretch="fixaspectratio" image="URL(&quot;imagerc::nexacro.png&quot;)"/>
+        <Menu id="Menu00" taborder="1" left="150" top="0" width="400" height="50" innerdataset="gds_menu" captioncolumn="m_name" idcolumn="m_id" levelcolumn="m_level" onmenuclick="Menu00_onmenuclick"/>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.1"><![CDATA[var objApp = nexacro.getApplication();
+
+
+this.Menu00_onmenuclick = function(obj:nexacro.Menu,e:nexacro.MenuClickEventInfo)
+{
+	// id와 url을 찾아 변수에 저장
+	var id = e.id; // innerDataset으로 바인딩했다면 바로 접근이 가능
+	
+	// Dataset.lookup()
+	var url = objApp.gds_menu.lookup("m_id", id, "m_url");
+	// m_id가 id 값인 행의 특정 값(url)을 찾는 함수
+	
+	// 전역에 선언된 함수 gfn_open 호출하여 화면 변경
+	objApp.gfn_open(id, url);
+};
+
+
+]]></Script>
+  </Form>
+</FDL>

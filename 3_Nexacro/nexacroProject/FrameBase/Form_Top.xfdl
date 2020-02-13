@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="Form_Top" width="1280" height="100" titletext="Form_Top">
+    <Layouts>
+      <Layout width="1280" height="100" screenid="Desktop_screen">
+        <ImageViewer id="ImageViewer00" taborder="0" text="" left="17" top="18" width="234" height="67" onclick="ImageViewer00_onclick" image="URL(&quot;imagerc::spring-by-pivotal.png&quot;)" stretch="fixaspectratio"/>
+        <Menu id="Menu00" taborder="1" left="250" top="51" width="650" height="34" innerdataset="dsMenu" captioncolumn="MenuName" idcolumn="MenuId" levelcolumn="MenuLevel" userdatacolumn="MenuUrl" onmenuclick="Menu00_onmenuclick"/>
+        <Button id="Button00" taborder="2" text="로그인" left="646" top="53" width="108" height="29" onclick="Button00_onclick"/>
+        <Button id="Button01" taborder="3" text="회원가입" left="770" top="53" width="108" height="29" onclick="Button01_onclick"/>
+        <Static id="Static00" taborder="4" text="님, 환영합니다" left="765" top="20" width="132" height="26" font="normal 12pt/normal &quot;Arial&quot;"/>
+        <Static id="Static01" taborder="5" text="방문자" left="706" top="18" width="58" height="26" font="normal 700 14pt/normal &quot;Arial&quot;" onclick="Static01_onclick"/>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.1"><![CDATA[var objApp = nexacro.getApplication();
+this.Menu00_onmenuclick = function(obj:nexacro.Menu,e:nexacro.MenuClickEventInfo)
+{
+	var sID = e.id; // 메뉴 id
+	var sName = obj.getInnerDataset().lookup("MenuId", sID, "MenuName"); // 메뉴명
+	var sURL = obj.getInnerDataset().lookup("MenuId", sID, "MenuUrl"); // 화면 url
+	
+	// 확인용 trace()
+	trace("확인 " + sID + "," + sName + "," + sURL);
+	
+	this.goMenu(sID, sName, sURL);
+};
+
+this.goMenu = function(sID, sName, sURL) {
+	if(sURL.length <= 0) return; // level 0인 메뉴는 화면이동 x
+	
+	var objFrame = objApp.mainframe.FrameSet.WorkFrame;
+	objFrame.set_formurl(sURL);
+}
+
+this.Button00_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	if(obj.text == "로그인") {
+		// 기존에 LoginFrame이 존재한다면 지우고 다시 만들기 위한 코드
+		if(this.LoginFrame != null) {
+			this.LoginFrame.destroy();
+			this.LoginFrame = null;
+		}
+	
+		// 동적으로 childFrame 생성
+		// (strName, nLeft, nTop, nWidth, nHeight [, nRight, nBottom [, strUrl]])
+		var objChildFrame = new ChildFrame("LoginFrame", 0, 0, 380, 290, null, null);	
+		objChildFrame.set_showtitlebar(false);
+		this.addChild("LoginFrame", objChildFrame);
+		
+		// childFrame 위에 form 설정
+		this.LoginFrame.set_formurl("FrameBase::Form_Login.xfdl");
+		
+		// ChildFrame.showModel(strID, objParentFrame)
+		this.LoginFrame.showModal("modal", this.getOwnerFrame());
+	}else { // obj.text == "로그아웃"
+		this.fn_logout();
+	}
+};
+
+// 로그아웃 기능
+this.fn_logout = function() {
+	this.Static01.set_text("방문객");
+	this.Button00.set_text("로그인");
+	this.Button00.set_cssclass(); // cancel 클래스 제거해서 초록색으로 변경
+	this.Button01.set_text("회원가입");
+	
+	this.transaction(
+		"Logout",
+		"svcurl::member/memberLogout.do",
+		"ds_member=gds_member",
+		"",
+		"",
+		"fn_logoutCallback"		
+	);
+	
+	// 사용자 화면을 홈으로 이동
+	this.goMenu(100, "Home", "FrameBase::Form_Work.xfdl");
+}
+
+this.fn_logoutCallback = function(svcID, errorCode, errorMsg) {
+	trace("svcID : " + svcID);
+	trace("errorCode : " + errorCode);
+	
+	// 전역 gds_member 제거
+	objApp.gds_member.deleteAll();
+	trace("gds_member 수 : " + objApp.gds_member.rowcount);
+	
+	if(errorCode != 0) {
+		alert("로그아웃 실패");
+	}else {
+		alert("정상적으로 로그아웃 되었습니다");
+	}
+}
+
+// 회원가입 버튼 or 정보수정 버튼
+this.Button01_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	if(objApp.gds_member.rowcount < 1) {
+		this.goMenu(400, "signIn", "Work::signInForm.xfdl");
+	}else {
+		this.goMenu(401, "memberInfo", "Work::memberInfoForm.xfdl");
+	}
+};
+]]></Script>
+    <Objects>
+      <Dataset id="dsMenu">
+        <ColumnInfo>
+          <Column id="MenuId" type="STRING" size="256"/>
+          <Column id="MenuName" type="STRING" size="256"/>
+          <Column id="MenuLevel" type="STRING" size="256"/>
+          <Column id="MenuUrl" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="MenuId">100</Col>
+            <Col id="MenuName">Home</Col>
+            <Col id="MenuLevel">0</Col>
+            <Col id="MenuUrl">FrameBase::Form_Work.xfdl</Col>
+          </Row>
+          <Row>
+            <Col id="MenuId">200</Col>
+            <Col id="MenuName">Dev</Col>
+            <Col id="MenuLevel">0</Col>
+            <Col id="MenuUrl"/>
+          </Row>
+          <Row>
+            <Col id="MenuId">201</Col>
+            <Col id="MenuName">Dev 목록</Col>
+            <Col id="MenuLevel">1</Col>
+            <Col id="MenuUrl">Work::devForm.xfdl</Col>
+          </Row>
+          <Row>
+            <Col id="MenuId">202</Col>
+            <Col id="MenuName">Dev 추가</Col>
+            <Col id="MenuLevel">1</Col>
+            <Col id="MenuUrl">Work::devInsert.xfdl</Col>
+          </Row>
+          <Row>
+            <Col id="MenuId">300</Col>
+            <Col id="MenuName">게시판</Col>
+            <Col id="MenuLevel">0</Col>
+          </Row>
+          <Row>
+            <Col id="MenuId">301</Col>
+            <Col id="MenuName">게시판 목록</Col>
+            <Col id="MenuLevel">1</Col>
+            <Col id="MenuUrl">Work::boardForm.xfdl</Col>
+          </Row>
+          <Row>
+            <Col id="MenuId">302</Col>
+            <Col id="MenuName">게시판 등록</Col>
+            <Col id="MenuLevel">1</Col>
+            <Col id="MenuUrl">Work::boardInsert.xfdl</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+    </Objects>
+  </Form>
+</FDL>

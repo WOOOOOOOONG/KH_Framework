@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="boardInsert" width="1280" height="720" titletext="New Form" font="normal 25pt/normal &quot;Arial&quot;" onload="boardInsert_onload">
+    <Layouts>
+      <Layout height="720" mobileorientation="landscape" width="1280">
+        <Static id="Static00" taborder="0" text="게시글 등록" left="68" top="42" width="256" height="48" font="normal 20pt/normal &quot;Arial&quot;" background="whitesmoke" textAlign="center"/>
+        <Static id="Static02" taborder="1" text="제목" left="125" top="120" width="90" height="38" font="normal 12pt/normal &quot;Arial&quot;" background="whitesmoke" textAlign="center"/>
+        <Static id="Static01" taborder="2" text="작성자" left="125" top="171" width="90" height="38" font="normal 12pt/normal &quot;Arial&quot;" background="whitesmoke" textAlign="center"/>
+        <Static id="Static05" taborder="3" text="내용" left="125" top="221" width="90" height="38" font="normal 12pt/normal &quot;Arial&quot;" background="whitesmoke" textAlign="center"/>
+        <Static id="Static07" taborder="4" text="" left="234" top="173" width="183" height="38"/>
+        <TextArea id="TextArea00" taborder="5" left="233" top="219" width="191" height="121" readonly="false" font="normal 9pt/normal &quot;Arial&quot;"/>
+        <Edit id="Edit00" taborder="6" left="236" top="121" width="185" height="39" font="normal 12pt/normal &quot;Arial&quot;"/>
+        <Edit id="Edit01" taborder="7" left="236" top="171" width="185" height="39" readonly="true" font="normal 12pt/normal &quot;Arial&quot;"/>
+        <Button id="Button00" taborder="8" text="게시글 작성" left="150" top="367" width="120" height="33" onclick="Button00_onclick"/>
+        <Button id="Button01" taborder="9" text="작성 취소" left="290" top="367" width="120" height="33" cssclass="cancel" onclick="Button01_onclick"/>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="ds_board">
+        <ColumnInfo>
+          <Column id="bId" type="INT" size="256"/>
+          <Column id="bTitle" type="STRING" size="256"/>
+          <Column id="bWriter" type="STRING" size="256"/>
+          <Column id="bContent" type="STRING" size="256"/>
+          <Column id="bCount" type="INT" size="256"/>
+          <Column id="bCreateDate" type="DATE" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row/>
+        </Rows>
+      </Dataset>
+      <Dataset id="ds_result"/>
+    </Objects>
+    <Bind>
+      <BindItem id="item0" compid="Edit00" propid="value" datasetid="ds_board" columnid="bTitle"/>
+      <BindItem id="item1" compid="Edit01" propid="value" datasetid="ds_board" columnid="bWriter"/>
+      <BindItem id="item2" compid="TextArea00" propid="value" datasetid="ds_board" columnid="bContent"/>
+    </Bind>
+    <Script type="xscript5.1"><![CDATA[var objApp = nexacro.getApplication();
+var topForm = objApp.mainframe.FrameSet.TopFrame.form;
+
+// 해당 페이지는 회원만 작성 가능하게 처리(onload 시)
+this.boardInsert_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+	// 전역에 데이터가 있다면 로그인된 상태
+	if(objApp.gds_member.getColumn(0, "id") != null) {
+		this.Edit01.set_value(objApp.gds_member.getColumn(0, "id"));
+	}else {
+		this.alert("회원만 작성 가능합니다!");
+		
+		// Home으로 이동
+		topForm.goMenu(100, "Home", "FrameBase::Form_Work.xfdl");
+	}
+};
+
+// 작성 btn
+this.Button00_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	// transaction board/boardInsert.do
+	this.transaction(
+		"boardInsert",
+		"svcurl::board/boardInsert.do",
+		"ds_board=ds_board",
+		"ds_result=ds_result",
+		"",
+		"fnCallback"
+	);
+};
+
+// 작성 취소 btn
+this.Button01_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	// 게시글 목록으로 이동
+	topForm.goMenu(301, "게시판 목록", "Work::boardForm.xfdl");
+};
+
+this.fnCallback = function(svcID, errorCode, errorMsg) {
+	// ds_result == true일 때
+	// 게시글 등록 alert, 게시글 목록 이동
+	// 실패 시 게시글 등록 실패 alert
+	if(this.ds_result.getColumn(0, "result") == true) {
+		this.alert("게시글이 등록되었습니다");
+		topForm.goMenu(301, "게시판 목록", "Work::boardForm.xfdl");
+	}else {
+		this.alert("게시글 등록을 실패했습니다");
+		topForm.goMenu(301, "게시판 목록", "Work::boardForm.xfdl");
+	}
+}]]></Script>
+  </Form>
+</FDL>

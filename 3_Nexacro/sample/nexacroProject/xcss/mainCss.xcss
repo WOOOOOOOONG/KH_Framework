@@ -1,0 +1,154 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XCSS version="1.0"><![CDATA[/***** Menu *****/
+.Menu
+{
+	-nexa-border : 0px none;
+	background : #f5f5f5;
+}
+.Menu .menuitem
+{
+	-nexa-border : 0px none;
+	-nexa-padding : 0px 20px 0px 20px;
+	background : transparent;
+	color : #222222;
+	font : 12px "Verdana";
+	border-radius : 0px;
+}
+.Menu .menuitem[status=mouseover]
+{
+	background : #e0e3e5;
+}
+.Menu .menuitem[userstatus=selected]
+{
+	background : #555a5e;
+	color : #ffffff;
+	font : bold 12px "Verdana";
+}
+/***** PopupMenu, PopupMenuControl *****/
+.PopupMenu,.PopupMenuControl
+{
+	-nexa-border : 1px solid #9c9c9c;
+	background : #ffffff;
+}
+.PopupMenu .popupmenuitem,.PopupMenuControl .popupmenuitem
+{
+	-nexa-border : 0px none;
+	background : #ffffff;
+	color : #222222;
+	font : 12px "Verdana";
+	-nexa-padding : 6px 3px 6px 3px;
+}
+.PopupMenu .popupmenuitem[status=mouseover],.PopupMenuControl .popupmenuitem[status=mouseover]
+{
+	-nexa-border : 0px none;
+	color : #f44528;
+	font : 12px "Verdana";
+	background : #ffffff;
+}
+.PopupMenu .popupmenuitem[userstatus=selected],.PopupMenuControl .popupmenuitem[userstatus=selected]
+{
+	-nexa-border : 0px none;
+	background : #f44528;
+	color : #ffffff;
+	font : 12px "Verdana";
+}
+.PopupMenu .popupmenuitem .popupmenuitemexpandimage,.PopupMenuControl .popupmenuitem .popupmenuitemexpandimage
+{
+	-nexa-border : 0px none;
+	-nexa-icon : URL("theme://images/Popmnu_expand.png");
+	background : transparent;
+	-nexa-padding : 0px;
+
+}
+.PopupMenu .popupmenuitem .popupmenuitemcheckbox,.PopupMenuControl .popupmenuitem .popupmenuitemcheckbox
+{
+	-nexa-border : 0px none;
+	-nexa-icon : URL("theme://images/Popmnu_check.png");
+	background : transparent;
+	-nexa-padding : 0px 2px 0px 0px;
+}
+.PopupMenu .popupmenuitem .popupmenuitemhotkeytext,.PopupMenuControl .popupmenuitem .popupmenuitemhotkeytext
+{
+}
+/***** PopupDiv *****/
+.PopupDiv
+{
+	-nexa-border : 1px solid #9c9c9c;
+	background : #ffffff;
+	border-radius : 0px;
+}
+.PopupDiv[status=disabled]
+{
+	-nexa-border : 1px solid #cbcbcb;
+}.Button
+{
+	border-radius : 3px;
+	background : transparent;
+	-nexa-border : 2px solid #00b050;
+	color : #00b050;
+	font : normal bold  10pt/normal "Arial";
+}
+.Button[status=mouseover]
+{
+	border-radius : 3px;
+	-nexa-border : 2px solid darkolivegreen;
+	font : normal bold  10pt/normal "Arial";
+	color : darkolivegreen;
+	background : transparent;
+}
+.Button.cancel
+{
+	-nexa-border : 2px solid #c00000;
+	color : crimson;
+}
+
+.Button.cancel[status=mouseover]
+{
+	border-radius : 3px;
+	-nexa-border : 2px solid #000000;
+	font : normal bold  10pt/normal "Arial";
+	color : black;
+	background : transparent;
+}
+.Button[userstatus=selected]
+{
+	border-radius : 3px;
+	background : transparent;
+	-nexa-border : 2px solid #00b050;
+	color : #00b050;
+	font : normal bold  10pt/normal "Arial";
+}
+
+.Button.cancel[userstatus=selected]
+{
+	-nexa-border : 2px solid #c00000;
+	color : crimson;
+}.Button.pageing
+{
+	-nexa-border : 0px none #FFFFFF;
+	color : #4f81bd;
+}
+.Button.pageing[status=disabled]
+{
+	color : #000000;
+}
+.Button.pageing[status=mouseover]
+{
+	-nexa-border : 0px none #FFFFFF;
+	color : #c0504d;
+	
+}
+.Button.pageing[status=focused]
+{
+	color : #4f81bd;
+}
+.Button.pageing[userstatus=pushed]
+{
+	color : #1f497d;
+}
+.Button.pageing[userstatus=selected]
+{
+	-nexa-border : 0px none #FFFFFF;
+	color : #1f497d;
+}
+]]></XCSS>

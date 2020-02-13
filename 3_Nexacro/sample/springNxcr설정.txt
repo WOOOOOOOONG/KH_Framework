@@ -1,0 +1,115 @@
+<!-- pom.xml -->
+<!-- version 변경 및 nexacro-uiadapter17-version properties 추가 -->
+	<properties>
+		<java-version>1.8</java-version>
+		<org.springframework-version>5.2.1.RELEASE</org.springframework-version>
+		<org.aspectj-version>1.6.10</org.aspectj-version>
+		<org.slf4j-version>1.6.6</org.slf4j-version>
+		<nexacro.uiadapter.version>1.0.0-SNAPSHOT</nexacro.uiadapter.version>
+	</properties>
+	
+	<!-- Local Repository for JDBC &
+	  	 nexacro platform uiadapter library-->
+	<repositories>
+		<repository>
+			<id>Spring Plugins</id>
+			<url>https://repo.spring.io/plugins-release/</url>
+		</repository>
+		<repository>
+            <id>tobesoft</id>
+            <name>tobesoft-nexacro</name>
+            <url>http://mangosteen.tobesoft.co.kr/nexus/repository/maven-public/</url>
+        </repository>
+	</repositories>
+	
+	<dependencies>
+		<!--   NEXACROPLATFORM UIADAPTER17 LIBRARY  -->
+        <dependency>
+            <groupId>com.nexacro.uiadapter17.spring</groupId>
+            <artifactId>uiadapter17-spring-core</artifactId>
+            <version>${nexacro.uiadapter.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.nexacro.uiadapter17.spring</groupId>
+            <artifactId>uiadapter17-spring-dataaccess</artifactId>
+            <version>${nexacro.uiadapter.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.nexacro.uiadapter17.spring</groupId>
+            <artifactId>uiadapter17-spring-excel</artifactId>
+            <version>${nexacro.uiadapter.version}</version>
+        </dependency>
+
+    <!-- 이후 dependency 생략 -->
+
+
+<!-- servlet-context.xml -->
+
+<!-- /////////////////////////////////// 넥사크로플랫폼 UIADAPTER17 설정 시작 /////////////////////////////////// -->
+	<!-- NexacroInterceptor : nexacro platform으로부터 데이터를 수신받아 PlatformData로의 변환하는 작업을 수행한다. -->
+    <beans:bean id="nexacroInterceptor" class="com.nexacro.uiadapter17.spring.core.servlet.NexacroInterceptor"/>
+    <beans:bean id="nexacroFileView"    class="com.nexacro.uiadapter17.spring.core.view.NexacroFileView" />
+    <!-- NexacroView : nexacro platform으로 데이터를 전달한다. -->
+    <beans:bean id="nexacroView"        class="com.nexacro.uiadapter17.spring.core.view.NexacroView" >
+        <beans:property name="defaultContentType" value="PlatformXml" />
+        <beans:property name="defaultCharset"     value="UTF-8" />
+    </beans:bean>
+    
+    <!-- 넥사크로플랫폼 RequestMappingHandlerAdapter 구현체 등록 -->
+    <beans:bean class="com.nexacro.uiadapter17.spring.core.resolve.NexacroRequestMappingHandlerAdapter" p:order="0">
+        <beans:property name="customArgumentResolvers">
+        	<!-- NexacroMethodArgumentResolver
+				개발자가 작성하게 되는 Controller의 argument의 데이터 변환을 수행한다.
+				Ex> PlatformData  java bean -->
+            <beans:list><beans:bean class="com.nexacro.uiadapter17.spring.core.resolve.NexacroMethodArgumentResolver" /></beans:list>
+        </beans:property>
+        <beans:property name="customReturnValueHandlers">
+            <beans:list>
+            	<!-- NexacroHandlerMethodReturnValueHandler
+					Controller에서 반환 되는 값의 데이터 변환을 수행한다.
+					Ex> java bean  PlatformData -->
+                <beans:bean class="com.nexacro.uiadapter17.spring.core.resolve.NexacroHandlerMethodReturnValueHandler">
+                    <beans:property name="view"     ref="nexacroView" />
+                    <beans:property name="fileView" ref="nexacroFileView" />
+                </beans:bean>
+            </beans:list>
+        </beans:property>
+    </beans:bean>
+    
+    <!-- 넥사크로플랫폼 EXCEPTION-RESOLVER 등록 -->
+    <!-- NexacroMappingExceptionResolver : nexacro platform 통신 규약에 맞는 오류 처리를 담당한다. -->
+    <beans:bean id="exceptionResolver" class="com.nexacro.uiadapter17.spring.core.resolve.NexacroMappingExceptionResolver" p:order="1">
+        <beans:property name="view" ref="nexacroView" />   
+        <beans:property name="shouldLogStackTrace"  value="true" />   
+        <beans:property name="shouldSendStackTrace" value="true" />
+        <!-- shouldSendStackTrace 가 false 일 경우 nexacro platform으로 전송되는 에러메시지  -->
+        <!-- <property name="defaultErrorMsg" value="An Error Occured. check the ErrorCode for detail of error infomation" /> -->
+        <beans:property name="defaultErrorMsg" value="fail.common.msg" />
+        <beans:property name="messageSource"   ref="messageSource" />
+    </beans:bean>
+    
+    <!-- XENI REQUEST-MAPPING-HANDLERADAPTER 등록 -->
+    <beans:bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"/>
+    <beans:bean id="xeniUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" p:order="0">
+        <beans:property name="mappings">
+            <beans:props>
+                <beans:prop key="/XExportImport.do">xeniWrappingController</beans:prop>
+            </beans:props>
+        </beans:property>
+    </beans:bean>
+    
+    <!-- XENI WRAPPINGCONTROLLER 설정. -->
+    <beans:bean id="xeniWrappingController" class="org.springframework.web.servlet.mvc.ServletWrappingController">
+        <beans:property name="servletClass" 
+        	value="com.nexacro17.xeni.services.GridExportImportServlet"/>
+    </beans:bean>
+    
+    <!-- Multipart Resolver 최대 10메가 바이트(정확히 10메가는 아니지만)까지 업로드가 가능하도록 설정 -->
+    <!-- XENI를 이용한 엑셀 IMPORT시 필요(엑셀 이용시 반드시 정의해야 함) -->
+    <beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <beans:property name="maxUploadSize"   value="10485760" />
+        <beans:property name="maxInMemorySize" value="10485760" />
+    </beans:bean>
+    <!-- /////////////////////////////////// 넥사크로플랫폼 UIADAPTER17 설정 끝 /////////////////////////////////// -->

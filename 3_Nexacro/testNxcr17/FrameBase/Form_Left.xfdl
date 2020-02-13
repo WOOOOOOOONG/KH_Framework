@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="Form_Left" width="200" height="670" titletext="Form_Left">
+    <Layouts>
+      <Layout width="200" height="670" screenid="screen00">
+        <Grid id="Grid00" taborder="0" left="4" top="55" width="174" height="216" binddataset="gds_menu" treeusecheckbox="false" treeinitstatus="expand,all" autofittype="col" oncellclick="Grid00_oncellclick">
+          <Formats>
+            <Format id="default">
+              <Columns>
+                <Column size="80"/>
+              </Columns>
+              <Rows>
+                <Row size="24"/>
+              </Rows>
+              <Band id="body">
+                <Cell text="bind:m_name" displaytype="treeitemcontrol" edittype="tree" treelevel="bind:m_level"/>
+              </Band>
+            </Format>
+          </Formats>
+        </Grid>
+      </Layout>
+    </Layouts>
+    <Script type="xscript5.1"><![CDATA[include "xLib::menu.xjs"; // xLib의 menu.xjs 파일 include
+
+// application 영역을 참조하기 위한 변수 선언
+var objApp = nexacro.getApplication();
+
+this.Grid00_oncellclick = function(obj:nexacro.Grid,e:nexacro.GridClickEventInfo)
+{
+	// 클릭된 행의 id와 url을 찾아 변수에 저장한다
+	var id = objApp.gds_menu.getColumn(e.row, "m_id");
+	var url = objApp.gds_menu.getColumn(e.row, "m_url");
+	
+	// 1 . ChildFrame 설정을 위한 내부 함수 호출하기
+	// this.fn_open(id, url);
+	// 2. 전역 script의 함수 호출
+	// objApp.gfn_open(id, url);
+	// 3. serviceGroup 따로 만들어 공용 js 함수
+	this.xfn_open(id, url);
+};
+
+// this.fn_open = function(id, url) {
+// 	// 1. ChildFrame이 위치한 경로 생성
+// 	var parentFrame = objApp.mainframe.VFrameSet00.HFrameSet00.WorkFrame;
+// 	// 2. ChildFrame의 formurl 설정
+// 	parentFrame.set_formurl(url);
+// }
+]]></Script>
+  </Form>
+</FDL>

@@ -8,6 +8,28 @@
       <XCSS rule_version="1.03"/>
       <Script rule_version="1.02"/>
     </Rule>
-    <Info project="D:\sewoong_workspace\7_Framework\3_Nexacro\testNxcr17\" generated="C:\Users\user2\Documents\nexacro\17\outputs\testNxcr17\"><File url="typedefinition.xml" checksum="20200129161204" errormsg=""/><File url="appvariables.xml" checksum="20200131193418" errormsg=""/><File url="environment.xml" checksum="20200131201624" errormsg=""/><File url="_resource_\_theme_\default\theme.xcss" checksum="20200129160923" errormsg=""/><File url="App_Desktop.xadl" checksum="20200131201747" errormsg=""/><File url="Work\frm_test.xfdl" checksum="20200129165729" errormsg=""/><File url="Work\frm_test2.xfdl" checksum="20200129181226" errormsg=""/><File url="Base\frm_prac1.xfdl" checksum="20200131180105" errormsg=""/><File url="Work\frm_prac2.xfdl" checksum="20200131202442" errormsg=""/><File url="Work\frm_prac1.xfdl" checksum="20200131180105" errormsg=""/><File url="Work\frm_prac2.xfdl" checksum="20200131201129" errormsg=""/><File url="_resource_\_theme_\windows\theme.xcss" checksum="20200131201359" errormsg=""/><File url="_resource_\_theme_\windows\" checksum="" errormsg=""/><File url="_resource_\_xcss_\test_css.xcss" checksum="20200131202341" errormsg=""/><File url="Work\commonUtil.xjs" checksum="20200131203427" errormsg=""/><File url="Work\frm_prac3.xfdl" checksum="20200131210234" errormsg=""/></Info>
+    <Info project="D:\sewoong_workspace\7_Framework\3_Nexacro\testNxcr17\" generated="C:\Users\user2\Documents\nexacro\17\outputs\testNxcr17\">
+      <File url="typedefinition.xml" checksum="20200203165556" errormsg=""/>
+      <File url="appvariables.xml" checksum="20200203155645" errormsg=""/>
+      <File url="environment.xml" checksum="20200203154426" errormsg=""/>
+      <File url="_resource_\_theme_\default\theme.xcss" checksum="20200129160923" errormsg=""/>
+      <File url="App_Desktop.xadl" checksum="20200131201747" errormsg=""/>
+      <File url="Work\frm_test.xfdl" checksum="20200129165729" errormsg=""/>
+      <File url="Work\frm_test2.xfdl" checksum="20200129181226" errormsg=""/>
+      <File url="Base\frm_prac1.xfdl" checksum="20200131180105" errormsg=""/>
+      <File url="Work\frm_prac2.xfdl" checksum="20200204191205" errormsg=""/>
+      <File url="Work\frm_prac1.xfdl" checksum="20200131180105" errormsg=""/>
+      <File url="Work\frm_prac2.xfdl" checksum="20200131201129" errormsg=""/>
+      <File url="_resource_\_theme_\windows\theme.xcss" checksum="20200131201359" errormsg=""/>
+      <File url="_resource_\_theme_\windows\" checksum="" errormsg=""/>
+      <File url="_resource_\_xcss_\test_css.xcss" checksum="20200131202341" errormsg=""/>
+      <File url="Work\commonUtil.xjs" checksum="20200131203427" errormsg=""/>
+      <File url="Work\frm_prac3.xfdl" checksum="20200131210234" errormsg=""/>
+      <File url="App_MDI.xadl" checksum="20200203165011" errormsg=""/>
+      <File url="FrameBase\Form_Top.xfdl" checksum="20200203164821" errormsg=""/>
+      <File url="FrameBase\Form_Left.xfdl" checksum="20200203170359" errormsg=""/>
+      <File url="FrameBase\Form_Work.xfdl" checksum="20200203154426" errormsg=""/>
+      <File url="xLib\menu.xjs" checksum="20200203165849" errormsg=""/>
+    </Info>
   </GenInfo>
 </root>

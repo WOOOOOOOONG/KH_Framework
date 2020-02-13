@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="Form_Work" width="1280" height="570" titletext="Form_Work">
+    <Layouts>
+      <Layout width="1280" height="570" screenid="Desktop_screen">
+        <Static id="Static00" taborder="0" text="Hello Spring Framework!!" left="268" top="56" width="434" height="95" font="normal 30pt/normal &quot;Arial&quot;" color="#6db33f"/>
+        <ImageViewer id="ImageViewer00" taborder="1" text="" left="213" top="154" width="535" height="293" image="URL(&quot;imagerc::spring_icon.png&quot;)" stretch="fixaspectratio"/>
+      </Layout>
+    </Layouts>
+  </Form>
+</FDL>

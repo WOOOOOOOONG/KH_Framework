@@ -1,0 +1,178 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="memberInfoForm" width="1280" height="720" titletext="New Form" onload="memberInfoForm_onload">
+    <Layouts>
+      <Layout height="720" mobileorientation="landscape" width="1280">
+        <Static id="Static01" taborder="0" text="회원 정보 수정 페이지" left="68" top="42" width="282" height="58" font="normal 20pt/normal &quot;Arial&quot;" background="whitesmoke" textAlign="center"/>
+        <Div id="Div00" taborder="1" text="" left="300" top="164" width="370" height="301">
+          <Layouts>
+            <Layout>
+              <Static id="Static00" taborder="0" text="비밀번호" left="12" top="85" width="115" height="38" font="normal 12pt/normal &quot;Arial&quot;" background="whitesmoke" textAlign="center"/>
+              <Static id="Static01" taborder="1" text="비밀번호 확인" left="12" top="133" width="115" height="38" font="normal 12pt/normal &quot;Arial&quot;" background="whitesmoke" textAlign="center"/>
+              <Edit id="Edit00" taborder="2" left="143" top="87" width="211" height="38" password="true"/>
+              <Edit id="Edit01" taborder="3" left="142" top="133" width="211" height="38" password="true"/>
+              <Button id="Button00" taborder="4" text="회원정보 조회" left="101" top="206" width="166" height="47" onclick="Div00_Button00_onclick"/>
+            </Layout>
+          </Layouts>
+        </Div>
+        <Div id="Div01" taborder="2" text="" left="180" top="106" width="874" height="404">
+          <Layouts>
+            <Layout>
+              <Static id="Static02" taborder="0" text="ID" left="75" top="60" width="90" height="38" font="normal 12pt/normal &quot;Arial&quot;" background="whitesmoke" textAlign="center"/>
+              <Static id="Static01" taborder="1" text="Name" left="75" top="119" width="90" height="38" font="normal 12pt/normal &quot;Arial&quot;" background="whitesmoke" textAlign="center"/>
+              <Static id="Static03" taborder="2" text="PWD 변경" left="75" top="179" width="90" height="38" font="normal 12pt/normal &quot;Arial&quot;" background="whitesmoke" textAlign="center"/>
+              <Static id="Static04" taborder="3" text="PWD 확인" left="75" top="230" width="90" height="38" font="normal 12pt/normal &quot;Arial&quot;" background="whitesmoke" textAlign="center"/>
+              <Edit id="Edit00" taborder="4" left="180" top="58" width="211" height="38" readonly="true"/>
+              <Edit id="Edit01" taborder="5" left="182" top="118" width="211" height="38" password="false"/>
+              <Edit id="Edit02" taborder="6" left="180" top="230" width="211" height="38" password="true"/>
+              <Edit id="Edit03" taborder="7" left="179" top="178" width="211" height="38" password="true"/>
+              <Static id="Static00" taborder="8" text="이메일" left="410" top="60" width="90" height="38" font="normal 12pt/normal &quot;Arial&quot;" background="whitesmoke" textAlign="center"/>
+              <Static id="Static05" taborder="9" text="주소" left="410" top="118" width="90" height="38" font="normal 12pt/normal &quot;Arial&quot;" background="whitesmoke" textAlign="center"/>
+              <Static id="Static06" taborder="10" text="성별" left="410" top="178" width="90" height="38" font="normal 12pt/normal &quot;Arial&quot;" background="whitesmoke" textAlign="center"/>
+              <Static id="Static07" taborder="11" text="연락처" left="410" top="230" width="90" height="38" font="normal 12pt/normal &quot;Arial&quot;" background="whitesmoke" textAlign="center"/>
+              <Static id="Static08" taborder="12" text="나이" left="75" top="280" width="90" height="38" font="normal 12pt/normal &quot;Arial&quot;" background="whitesmoke" textAlign="center"/>
+              <Edit id="Edit04" taborder="13" left="180" top="280" width="211" height="38"/>
+              <Static id="Static09" taborder="14" text="가입일" left="410" top="280" width="90" height="38" font="normal 12pt/normal &quot;Arial&quot;" background="whitesmoke" textAlign="center"/>
+              <Edit id="Edit05" taborder="15" left="509" top="58" width="211" height="38" password="false"/>
+              <Edit id="Edit06" taborder="16" left="509" top="119" width="211" height="38" password="false"/>
+              <Edit id="Edit07" taborder="17" left="510" top="231" width="211" height="38" password="false"/>
+              <Radio id="Radio00" taborder="18" left="510" top="179" width="204" height="39" innerdataset="ds_gender" codecolumn="code" datacolumn="data" direction="vertical"/>
+              <Button id="Button00" taborder="19" text="정보 수정" left="200" top="341" width="139" height="38" onclick="Div01_Button00_onclick"/>
+              <Button id="Button01" taborder="20" text="회원 탈퇴" left="410" top="341" width="139" height="38" cssclass="cancel" onclick="Div01_Button01_onclick"/>
+              <Calendar id="Calendar00" taborder="21" left="512" top="282" width="206" height="39" readonly="true"/>
+            </Layout>
+          </Layouts>
+        </Div>
+      </Layout>
+    </Layouts>
+    <Objects>
+      <Dataset id="ds_gender">
+        <ColumnInfo>
+          <Column id="code" type="STRING" size="256"/>
+          <Column id="data" type="STRING" size="256"/>
+        </ColumnInfo>
+        <Rows>
+          <Row>
+            <Col id="code">M</Col>
+            <Col id="data">남성</Col>
+          </Row>
+          <Row>
+            <Col id="code">F</Col>
+            <Col id="data">여성</Col>
+          </Row>
+        </Rows>
+      </Dataset>
+      <Dataset id="ds_result"/>
+    </Objects>
+    <Script type="xscript5.1"><![CDATA[var objApp = nexacro.getApplication();
+// 해당 form이 로드될 때 this.Div01 숨기기
+this.memberInfoForm_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+	this.Div01.set_visible(false);
+};
+
+this.Div00_Button00_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	var pwd = this.Div00.form.Edit00.text;
+	var pwdChk = this.Div00.form.Edit01.text;
+	var originPwd = objApp.gds_member.getColumn(0, "pwd");
+	
+	if(pwd != pwdChk) {
+		alert("비밀번호와 확인값이 일치하지 않습니다!");
+	}else if(pwd != originPwd) {
+		alert("비밀번호가 올바르지 않습니다!");
+	}else {
+		this.Div00.set_visible(false);
+		this.Div01.set_visible(true);
+	}
+};
+
+// 회원정보 수정 btn
+this.Div01_Button00_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	var pwd = this.Div01.form.Edit03.text;
+	var pwdChk = this.Div01.form.Edit02.text;
+	
+	if(pwd != pwdChk) {
+		alert("변경할 비밀번호와 확인값이 다릅니다");
+	}else {
+		if(objApp.gfn_passwordValidate(pwd)) {
+			this.transaction(
+				"memberUpdate",
+				"svcurl::member/memberUpdate.do",
+				"ds_member=gds_member",
+				"ds_result=ds_result",
+				"",
+				"callBackFunc"
+			);
+		}else {
+			alert("비밀번호는 8~20자 영문, 숫자, 특수문자 조합이어야 합니다");
+		}
+	}
+};
+
+// 회원 탈퇴 btn
+this.Div01_Button01_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	var userId = this.Div01.form.Edit00.text;
+	
+	if(confirm("정말 탈퇴하시겠습니까?")) {
+		this.transaction(
+			"memberDelete",
+			"svcurl::member/memberDelete.do",
+			"",
+			"ds_result=ds_result",
+			"userId="+userId,
+			"callBackFunc"
+		);
+	}
+};
+
+this.callBackFunc = function(svcId, errorCode, errorMsg) {
+	var userName = this.Div01.form.Edit01.text;
+	switch(svcId) {
+		case "memberUpdate" :
+			if(this.ds_result.getColumn(0, "result") == true) {
+				alert("회원정보 수정 완료!");
+				var topForm = objApp.mainframe.FrameSet.TopFrame.form;
+				topForm.Static01.set_text(userName); // ㅇㅇㅇ님, 환영... 의 이름 변경
+				topForm.goMenu(100, "Home", "FrameBase::Form_Work.xfdl");
+			}else {
+				alert("회원정보 변경 에러!!\n관리자에게 문의하세요!");
+			}
+		break;
+		case "memberDelete" :
+			if(this.ds_result.getColumn(0, "result") == true) {
+				alert("탈퇴가 정상적으로 이루어졌습니다!");
+				
+				var topForm = objApp.mainframe.FrameSet.TopFrame.form;
+				topForm.Static01.set_text("방문객");
+				topForm.Button00.set_text("로그인");
+				topForm.Button00.set_cssclass();
+				topForm.Button01.set_text("회원가입");
+				
+				objApp.gds_member.deleteAll(); // 전역에서 관리하고 있던 로그인 멤버 삭제
+				
+				topForm.goMenu(100, "Home", "FrameBase::Form_Work.xfdl");
+			}else {
+				alert("회원 탈퇴 에러!!\n관리자에게 문의하세요!");
+			}
+		break;
+	}
+}
+
+
+]]></Script>
+    <Bind>
+      <BindItem id="item0" compid="Div01.form.Edit00" propid="value" datasetid="gds_member" columnid="id"/>
+      <BindItem id="item1" compid="Div01.form.Edit01" propid="value" datasetid="gds_member" columnid="name"/>
+      <BindItem id="item2" compid="Div01.form.Edit04" propid="value" datasetid="gds_member" columnid="age"/>
+      <BindItem id="item3" compid="Div01.form.Edit05" propid="value" datasetid="gds_member" columnid="email"/>
+      <BindItem id="item4" compid="Div01.form.Edit06" propid="value" datasetid="gds_member" columnid="address"/>
+      <BindItem id="item5" compid="Div01.form.Radio00" propid="value" datasetid="gds_member" columnid="gender"/>
+      <BindItem id="item6" compid="Div01.form.Edit07" propid="value" datasetid="gds_member" columnid="phone"/>
+      <BindItem id="item7" compid="Div01.form.Calendar00" propid="value" datasetid="gds_member" columnid="enrollDate"/>
+      <BindItem id="item8" compid="Div01.form.Edit03" propid="value" datasetid="gds_member" columnid="pwd"/>
+    </Bind>
+  </Form>
+</FDL>

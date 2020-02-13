@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FDL version="2.0">
+  <Form id="boardUpdate" width="1280" height="720" titletext="New Form" onload="boardUpdate_onload">
+    <Layouts>
+      <Layout height="720" mobileorientation="landscape" width="1280">
+        <Static id="Static00" taborder="0" text="게시글 상세보기" left="68" top="42" width="256" height="48" font="normal 20pt/normal &quot;Arial&quot;" background="whitesmoke" textAlign="center"/>
+        <Static id="Static02" taborder="1" text="제목" left="125" top="120" width="90" height="38" font="normal 12pt/normal &quot;Arial&quot;" background="whitesmoke" textAlign="center"/>
+        <Static id="Static01" taborder="2" text="작성자" left="125" top="171" width="90" height="38" font="normal 12pt/normal &quot;Arial&quot;" background="whitesmoke" textAlign="center"/>
+        <Static id="Static03" taborder="3" text="조회수" left="125" top="221" width="90" height="38" font="normal 12pt/normal &quot;Arial&quot;" background="whitesmoke" textAlign="center"/>
+        <Static id="Static04" taborder="4" text="작성일" left="125" top="271" width="90" height="38" font="normal 12pt/normal &quot;Arial&quot;" background="whitesmoke" textAlign="center"/>
+        <Static id="Static05" taborder="5" text="내용" left="125" top="321" width="90" height="38" font="normal 12pt/normal &quot;Arial&quot;" background="whitesmoke" textAlign="center"/>
+        <Static id="Static07" taborder="6" text="" left="234" top="173" width="183" height="38"/>
+        <Static id="Static08" taborder="7" text="" left="237" top="222" width="183" height="38" onclick="Static08_onclick"/>
+        <Calendar id="Calendar00" taborder="8" left="232" top="271" width="192" height="43" readonly="true"/>
+        <TextArea id="TextArea00" taborder="9" left="233" top="319" width="191" height="121" readonly="false"/>
+        <Edit id="Edit00" taborder="10" left="236" top="121" width="185" height="39"/>
+        <Button id="Button00" taborder="11" text="수정하기" left="154" top="464" width="115" height="43" onclick="Button00_onclick"/>
+        <Button id="Button01" taborder="12" text="목록으로" left="290" top="464" width="115" height="43" onclick="Button01_onclick"/>
+      </Layout>
+    </Layouts>
+    <Bind>
+      <BindItem id="item1" compid="Static07" propid="text" datasetid="ds_board" columnid="bWriter"/>
+      <BindItem id="item2" compid="Static08" propid="text" datasetid="ds_board" columnid="bCount"/>
+      <BindItem id="item3" compid="Calendar00" propid="value" datasetid="ds_board" columnid="bCreateDate"/>
+      <BindItem id="item4" compid="TextArea00" propid="value" datasetid="ds_board" columnid="bContent"/>
+      <BindItem id="item0" compid="Edit00" propid="value" datasetid="ds_board" columnid="bTitle"/>
+    </Bind>
+    <Objects>
+      <Dataset id="ds_board">
+        <ColumnInfo>
+          <Column id="bId" type="INT" size="256"/>
+          <Column id="bTitle" type="STRING" size="256"/>
+          <Column id="bWriter" type="STRING" size="256"/>
+          <Column id="bContent" type="STRING" size="256"/>
+          <Column id="bCount" type="INT" size="256"/>
+          <Column id="bCreateDate" type="DATE" size="256"/>
+        </ColumnInfo>
+      </Dataset>
+      <Dataset id="ds_result"/>
+    </Objects>
+    <Script type="xscript5.1"><![CDATA[var objApp = nexacro.getApplication();
+var topForm = objApp.mainframe.FrameSet.TopFrame.form;
+
+this.boardUpdate_onload = function(obj:nexacro.Form,e:nexacro.LoadEventInfo)
+{
+	// 전역 dataset에 저장된 bId를 가져옴
+	var bId = objApp.gds_board.getColumn(0, 0);
+	// trace("전달 값 확인 : " + bId);
+	
+	// bId를 서버에 전달하고 이에 따른 게시글 상세정보를 return 받음
+	this.ds_board.clearData();
+	this.transaction(
+		"boardDetail",
+		"svcurl::board/boardDetail.do",
+		"",
+		"ds_board=ds_board",
+		"bId="+bId,
+		"fnCallback"
+	); // board/boardDetail.do로 요청
+};
+
+// 목록으로 btn
+this.Button01_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	topForm.goMenu(301, "게시글 목록", "Work::boardForm.xfdl");
+};
+
+// 수정하기 btn
+this.Button00_onclick = function(obj:nexacro.Button,e:nexacro.ClickEventInfo)
+{
+	var bId = objApp.gds_board.getColumn(0, 0);
+	var bTitle = this.ds_board.getColumn(0, "bTitle");
+	var bContent = this.ds_board.getColumn(0, "bContent");
+	// trace("bId : " + bId + " bTitle : " + bTitle + " bContent : " + bContent);
+	
+	// transaction board/boardUpdate.do
+	this.transaction(
+		"boardUpdate",
+		"svcurl::board/boardUpdate.do",
+		"",
+		"ds_result=ds_result ds_board=ds_board",
+		"bId="+bId+" bTitle="+bTitle+" bContent="+bContent,
+		"fnCallback"
+	);
+};
+
+this.fnCallback = function(svcID, errorCode, errorMsg) {
+	if(svcID == "boardUpdate") {
+		if(this.ds_result.getColumn(0, "result") == true) {
+			this.alert("게시글이 수정되었습니다.");
+			topForm.goMenu(301, "게시글 상세보기", "Work::boardDetail.xfdl")
+		}else {
+			alert("게시글 수정에 실패하였습니다.");
+		}
+	}
+}]]></Script>
+  </Form>
+</FDL>
